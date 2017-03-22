@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Kittentrate</string>
+    <string name="progress_dialog_loading_images_title">Loading images</string>
+    <string name="progress_dialog_loading_images_message">Please wait</string>
+</resources>
