@@ -9,8 +9,9 @@ import mvp.model.entity.Card;
 import mvp.model.entity.PhotoEntity;
 import mvp.model.mapping.PhotoEntityMapper;
 import mvp.model.mapping.PhotoEntityMapperInterface;
-import mvp.model.repository.CardsRepository;
-import mvp.model.repository.remote.CardsRemoteDataSource;
+import mvp.model.repository.KittentrateRepository;
+import mvp.model.repository.local.KittentrateLocalDataSource;
+import mvp.model.repository.remote.KittentrateRemoteDataSource;
 import mvp.model.rest.NetworkCallback;
 
 /**
@@ -19,7 +20,7 @@ import mvp.model.rest.NetworkCallback;
 
 public class KittenGamePresenter implements KittenContract.Presenter, NetworkCallback {
     private final KittenContract.View view;
-    private CardsRepository cardsRepository;
+    private KittentrateRepository cardsRepository;
     private GameManager gameManager;
 
 
@@ -28,8 +29,9 @@ public class KittenGamePresenter implements KittenContract.Presenter, NetworkCal
         this.view = view;
         this.gameManager = new GameManager(this);
         PhotoEntityMapperInterface serviceMapper = new PhotoEntityMapper();
-        CardsRemoteDataSource remoteDataSource = new CardsRemoteDataSource(this, serviceMapper);
-        cardsRepository = new CardsRepository(remoteDataSource);
+        KittentrateRemoteDataSource remoteDataSource = new KittentrateRemoteDataSource(this, serviceMapper);
+        KittentrateLocalDataSource localDataSource = new KittentrateLocalDataSource();
+        cardsRepository = new KittentrateRepository(localDataSource, remoteDataSource);
     }
 
     void start() {

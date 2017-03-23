@@ -34,7 +34,7 @@ class KittenAdapter extends RecyclerView.Adapter<KittenAdapter.CardViewHolder> {
         this.onItemClickListener = onItemClickListener;
         this.context = context.getApplicationContext();
         cardList = new ArrayList<>();
-        for (int i = 0; i < 4 * Constants.NUMBER_MATCHING_CARDS; i++) {
+        for (int i = 0; i < 8 * Constants.NUMBER_MATCHING_CARDS; i++) {
             cardList.add(new Card());
         }
     }

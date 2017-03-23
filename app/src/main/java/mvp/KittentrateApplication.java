@@ -1,6 +1,8 @@
 package mvp;
 
+import android.annotation.SuppressLint;
 import android.app.Application;
+import android.content.Context;
 
 import com.squareup.leakcanary.LeakCanary;
 
@@ -9,6 +11,9 @@ import com.squareup.leakcanary.LeakCanary;
  */
 
 public class KittentrateApplication extends Application {
+    @SuppressLint("StaticFieldLeak")
+    private static Context context;
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -19,5 +24,10 @@ public class KittentrateApplication extends Application {
         }
         LeakCanary.install(this);
         // Normal app init code...
+        context = getApplicationContext();
+    }
+
+    public static Context getContext() {
+        return context;
     }
 }

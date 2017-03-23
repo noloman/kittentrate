@@ -7,5 +7,6 @@ package mvp.model.utils;
 public class Constants {
     public static final int NUMBER_MATCHING_CARDS = 2;
     public static final int ROTATION_TIME = 1000;
-    public static final String CARDS_PER_PAGE = "8";
+    public static final String CARDS_PER_PAGE = "16";
+    public static final int NUMBER_TOP_SCORES = 10;
 }

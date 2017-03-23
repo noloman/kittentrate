@@ -26,10 +26,6 @@
         android:columnWidth="@dimen/card_size"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
-    <!--<mvp.view.custom.TimerView-->
-    <!--android:id="@+id/timer_view"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="2dp" />-->
     <FrameLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

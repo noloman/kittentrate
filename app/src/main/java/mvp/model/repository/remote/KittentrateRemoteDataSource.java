@@ -1,8 +1,11 @@
 package mvp.model.repository.remote;
 
+import java.util.List;
+
 import mvp.model.entity.FlickrPhoto;
 import mvp.model.mapping.PhotoEntityMapperInterface;
-import mvp.model.repository.CardsDataSource;
+import mvp.model.repository.KittentrateDataSource;
+import mvp.model.repository.model.PlayerScore;
 import mvp.model.rest.NetworkCallback;
 import mvp.model.rest.RetrofitClient;
 import retrofit2.Call;
@@ -13,11 +16,11 @@ import retrofit2.Response;
  * Created by manu on 18/03/2017.
  */
 
-public class CardsRemoteDataSource implements CardsDataSource {
+public class KittentrateRemoteDataSource implements KittentrateDataSource {
     private final NetworkCallback networkCallback;
     private PhotoEntityMapperInterface serviceMapper;
 
-    public CardsRemoteDataSource(NetworkCallback networkCallback, PhotoEntityMapperInterface serviceMapper) {
+    public KittentrateRemoteDataSource(NetworkCallback networkCallback, PhotoEntityMapperInterface serviceMapper) {
         this.serviceMapper = serviceMapper;
         this.networkCallback = networkCallback;
     }
@@ -36,5 +39,15 @@ public class CardsRemoteDataSource implements CardsDataSource {
                 networkCallback.onFailure(t);
             }
         });
+    }
+
+    @Override
+    public List<PlayerScore> getTopScores() {
+        throw new UnsupportedOperationException("Operation not supported");
+    }
+
+    @Override
+    public void addTopScore(PlayerScore playerScore) {
+        throw new UnsupportedOperationException("Operation not supported");
     }
 }

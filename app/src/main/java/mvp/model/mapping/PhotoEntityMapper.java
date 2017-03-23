@@ -1,7 +1,5 @@
 package mvp.model.mapping;
 
-import android.util.Log;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -21,7 +19,6 @@ public class PhotoEntityMapper implements PhotoEntityMapperInterface {
         ArrayList<PhotoEntity> photoEntityArrayList = new ArrayList<>();
         int count = 0;
         Iterator it = photoCollection.iterator();
-        Log.i("manu", "photoCollectionSize: " + photoCollection.size());
         while (it.hasNext() && count < photoCollection.size() / Constants.NUMBER_MATCHING_CARDS) {
             ++count;
             Photo photo = (Photo) it.next();
@@ -31,13 +28,10 @@ public class PhotoEntityMapper implements PhotoEntityMapperInterface {
             photoEntity.setUrl(photoUrlString);
             photoEntityArrayList.add(photoEntity);
         }
-        Log.i("manu", "count: " + count);
-        Log.i("manu", "photoEntityArrayList before duplicating " + photoEntityArrayList.size());
         ArrayList<PhotoEntity> newPhotoEntityArrayList1 = new ArrayList<>();
-        for (int i = 0; i < count / Constants.NUMBER_MATCHING_CARDS; i++) {
+        for (int i = 0; i < count / (2 * Constants.NUMBER_MATCHING_CARDS); i++) {
             newPhotoEntityArrayList1.addAll(photoEntityArrayList);
         }
-        Log.i("manu", "transform: " + newPhotoEntityArrayList1.size());
         return newPhotoEntityArrayList1;
     }
 }
