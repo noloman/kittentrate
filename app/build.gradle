@@ -50,8 +50,9 @@ dependencies {
     compile "com.squareup.retrofit2:converter-gson:${retrofitVersion}"
     compile "com.squareup.okhttp3:logging-interceptor:${squareLoggingInterceptorVersion}"
 
-    testCompile "com.squareup.leakcanary:leakcanary-android:${leakCanaryVersion}"
     debugCompile "com.squareup.leakcanary:leakcanary-android:${leakCanaryVersion}"
+    releaseCompile "com.squareup.leakcanary:leakcanary-android:${leakCanaryVersion}"
+    testCompile "com.squareup.leakcanary:leakcanary-android:${leakCanaryVersion}"
 
     compile 'com.android.support:support-v4:25.3.1'
     compile 'com.android.support:design:25.3.1'
