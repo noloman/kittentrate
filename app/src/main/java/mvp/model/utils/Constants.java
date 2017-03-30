@@ -1,7 +1,7 @@
 package mvp.model.utils;
 
 /**
- * Created by manu on 19/03/2017.
+ * Created by Manuel Lorenzo on 19/03/2017.
  */
 
 public class Constants {

@@ -6,7 +6,7 @@ import java.util.WeakHashMap;
 import mvp.model.entity.Card;
 import mvp.model.entity.Game;
 import mvp.model.utils.Constants;
-import mvp.view.kittentrate.KittenGamePresenter;
+import mvp.view.kittentrate.GamePresenter;
 
 /**
  * Created by Manuel Lorenzo on 21/03/2017.
@@ -15,10 +15,10 @@ import mvp.view.kittentrate.KittenGamePresenter;
 public class GameManager {
     private Game game;
     private Map<Integer, Card> facingUpCardsWeakHashMap = new WeakHashMap<>(Constants.NUMBER_MATCHING_CARDS);
-    private KittenGamePresenter kittenGamePresenter;
+    private GamePresenter gamePresenter;
 
-    public GameManager(KittenGamePresenter kittenGamePresenter) {
-        this.kittenGamePresenter = kittenGamePresenter;
+    public GameManager(GamePresenter gamePresenter) {
+        this.gamePresenter = gamePresenter;
         this.game = new Game();
     }
 
@@ -48,28 +48,28 @@ public class GameManager {
             }
             if (matchFound) {
                 // Match found; remove cards from dataset
-                kittenGamePresenter.removeViewFlipper();
+                gamePresenter.removeViewFlipper();
                 for (Map.Entry<Integer, Card> entry : facingUpCardsWeakHashMap.entrySet()) {
                     Card card1 = entry.getValue();
-                    kittenGamePresenter.notifyAdapterItemRemoved(card1.getId());
+                    gamePresenter.notifyAdapterItemRemoved(card1.getId());
                 }
                 facingUpCardsWeakHashMap.clear();
                 increaseGameScore();
-                kittenGamePresenter.onGameScoreIncreased(getGameScore());
+                gamePresenter.onGameScoreIncreased(getGameScore());
                 if (isGameFinished()) {
-                    kittenGamePresenter.onGameFinished();
+                    gamePresenter.onGameFinished();
                 }
-                kittenGamePresenter.removeViewFlipper();
+                gamePresenter.removeViewFlipper();
             } else {
                 // Match not found; turn cards over and start from the beginning.
-                kittenGamePresenter.onTurnCardsOver();
+                gamePresenter.onTurnCardsOver();
             }
         }
     }
 
     public void removeCardsFromMap() {
         for (Map.Entry<Integer, Card> entry : facingUpCardsWeakHashMap.entrySet()) {
-            kittenGamePresenter.notifyAdapterItemChanged(entry.getKey());
+            gamePresenter.notifyAdapterItemChanged(entry.getKey());
         }
         facingUpCardsWeakHashMap.clear();
     }

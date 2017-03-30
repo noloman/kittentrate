@@ -14,7 +14,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import mvp.model.utils.Constants;
 
 /**
- * Created by manu on 18/03/2017.
+ * Created by Manuel Lorenzo on 18/03/2017.
  */
 
 public class RetrofitClient {

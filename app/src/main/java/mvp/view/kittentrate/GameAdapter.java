@@ -22,15 +22,16 @@ import manulorenzo.me.kittentrate.R;
 import mvp.model.utils.Constants;
 
 /**
- * Created by manu on 13/03/2017.
+ * Created by Manuel Lorenzo on 13/03/2017.
  */
 
-class KittenAdapter extends RecyclerView.Adapter<KittenAdapter.CardViewHolder> {
+public class GameAdapter extends RecyclerView.Adapter<GameAdapter.CardViewHolder> {
     private List<Card> cardList;
     private OnItemClickListener onItemClickListener;
     private Context context;
 
-    KittenAdapter(OnItemClickListener onItemClickListener, Context context) {
+    GameAdapter(OnItemClickListener onItemClickListener, Context context) {
+        this.context = context;
         this.onItemClickListener = onItemClickListener;
         this.context = context.getApplicationContext();
         cardList = new ArrayList<>();
@@ -59,17 +60,17 @@ class KittenAdapter extends RecyclerView.Adapter<KittenAdapter.CardViewHolder> {
         }
     }
 
-    interface OnItemClickListener {
+    public interface OnItemClickListener {
         void onItemClick(int position, Card item, ViewFlipper viewFlipper);
     }
 
     @Override
     public CardViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        Context context = parent.getContext();
-        LayoutInflater inflater = LayoutInflater.from(context);
+        Context parentContext = parent.getContext();
+        LayoutInflater inflater = LayoutInflater.from(parentContext);
 
         // Inflate the custom layout
-        View cardView = inflater.inflate(R.layout.card_layout, parent, false);
+        View cardView = inflater.inflate(R.layout.card_item, parent, false);
 
         // Return a new holder instance
         return new CardViewHolder(cardView);

@@ -7,7 +7,7 @@ import android.content.Context;
 import com.squareup.leakcanary.LeakCanary;
 
 /**
- * Created by Manuel Lorenzo on 22/03/2017.
+ * Created by Manuel Lorenzo
  */
 
 public class KittentrateApplication extends Application {

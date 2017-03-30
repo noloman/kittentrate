@@ -5,7 +5,7 @@ import android.support.v7.widget.GridLayoutManager;
 import android.util.AttributeSet;
 
 /**
- * Created by manu on 19/03/2017.
+ * Created by Manuel Lorenzo on 19/03/2017.
  */
 
 public class AutofitGridLayoutManager extends GridLayoutManager {

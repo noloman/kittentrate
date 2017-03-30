@@ -7,7 +7,7 @@ import mvp.model.entity.Photo;
 import mvp.model.entity.PhotoEntity;
 
 /**
- * Created by manu on 20/03/2017.
+ * Created by Manuel Lorenzo on 20/03/2017.
  */
 
 public interface PhotoEntityMapperInterface {

@@ -15,16 +15,16 @@ import mvp.model.repository.remote.KittentrateRemoteDataSource;
 import mvp.model.rest.NetworkCallback;
 
 /**
- * Created by manu on 18/03/2017.
+ * Created by Manuel Lorenzo on 18/03/2017.
  */
 
-public class KittenGamePresenter implements KittenContract.Presenter, NetworkCallback {
-    private final KittenContract.View view;
+public class GamePresenter implements Contract.Presenter, NetworkCallback {
+    private final Contract.View view;
     private KittentrateRepository cardsRepository;
     private GameManager gameManager;
+    private int score;
 
-
-    KittenGamePresenter(KittenContract.View view) {
+    GamePresenter(Contract.View view) {
         // TODO DI
         this.view = view;
         this.gameManager = new GameManager(this);
@@ -39,7 +39,7 @@ public class KittenGamePresenter implements KittenContract.Presenter, NetworkCal
         cardsRepository.getPhotos(this);
     }
 
-    boolean shouldDispatchTouchEvent() {
+    public boolean shouldDispatchTouchEvent() {
         return gameManager.shouldDispatchUiEvent();
     }
 
@@ -65,6 +65,7 @@ public class KittenGamePresenter implements KittenContract.Presenter, NetworkCal
     }
 
     public void onGameScoreIncreased(int gameScore) {
+        score = gameScore;
         view.onScoreIncreased(gameScore);
     }
 
@@ -86,5 +87,9 @@ public class KittenGamePresenter implements KittenContract.Presenter, NetworkCal
 
     public void notifyAdapterItemChanged(Integer key) {
         view.notifyAdapterItemChanged(key);
+    }
+
+    int getScore() {
+        return score;
     }
 }

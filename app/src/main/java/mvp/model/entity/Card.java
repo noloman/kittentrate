@@ -1,7 +1,7 @@
 package mvp.model.entity;
 
 /**
- * Created by manu on 13/03/2017.
+ * Created by Manuel Lorenzo on 13/03/2017.
  */
 
 public class Card {

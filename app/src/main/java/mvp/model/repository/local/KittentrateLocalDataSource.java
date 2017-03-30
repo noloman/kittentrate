@@ -14,7 +14,7 @@ import mvp.model.rest.NetworkCallback;
 import mvp.model.utils.Constants;
 
 /**
- * Created by Manuel Lorenzo on 23/03/2017.
+ * Created by Manuel Lorenzo
  */
 
 public class KittentrateLocalDataSource implements KittentrateDataSource {

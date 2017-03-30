@@ -11,7 +11,7 @@ import mvp.model.entity.PhotoEntity;
  * Created by Manuel Lorenzo on 21/03/2017.
  */
 
-interface KittenContract {
+public interface Contract {
     interface View {
         void showLoadingView();
 

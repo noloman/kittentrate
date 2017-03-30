@@ -1,7 +1,7 @@
 package mvp.model.entity;
 
 /**
- * Created by manu on 20/03/2017.
+ * Created by Manuel Lorenzo on 20/03/2017.
  */
 
 public class Game {

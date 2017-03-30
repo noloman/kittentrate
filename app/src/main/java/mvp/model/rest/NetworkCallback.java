@@ -5,7 +5,7 @@ import java.util.List;
 import mvp.model.entity.PhotoEntity;
 
 /**
- * Created by manu on 19/03/2017.
+ * Created by Manuel Lorenzo
  */
 
 public interface NetworkCallback {

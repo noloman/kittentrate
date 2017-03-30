@@ -7,7 +7,7 @@ import mvp.model.repository.model.PlayerScore;
 import mvp.model.rest.NetworkCallback;
 
 /**
- * Created by manu on 18/03/2017.
+ * Created by Manuel Lorenzo on 18/03/2017.
  */
 
 public class KittentrateRepository implements KittentrateDataSource {

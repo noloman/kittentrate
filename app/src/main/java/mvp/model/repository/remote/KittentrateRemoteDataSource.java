@@ -13,7 +13,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 /**
- * Created by manu on 18/03/2017.
+ * Created by Manuel Lorenzo on 18/03/2017.
  */
 
 public class KittentrateRemoteDataSource implements KittentrateDataSource {
