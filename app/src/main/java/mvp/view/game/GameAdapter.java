@@ -1,4 +1,4 @@
-package mvp.view.kittentrate;
+package mvp.view.game;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;

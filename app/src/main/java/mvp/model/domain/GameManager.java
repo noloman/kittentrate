@@ -6,7 +6,7 @@ import java.util.WeakHashMap;
 import mvp.model.entity.Card;
 import mvp.model.entity.Game;
 import mvp.model.utils.Constants;
-import mvp.view.kittentrate.GamePresenter;
+import mvp.view.game.GamePresenter;
 
 /**
  * Created by Manuel Lorenzo on 21/03/2017.
@@ -36,7 +36,7 @@ public class GameManager {
 
     public void cardFlipped(int position, Card card) {
         facingUpCardsWeakHashMap.put(position, card);
-        if (facingUpCardsWeakHashMap.size() == Constants.NUMBER_MATCHING_CARDS) {
+        if (shouldCheckForCardsMatch()) {
             // This would be the last card, we should check for matches.
             String id = card.getId();
             boolean matchFound = true;
@@ -65,6 +65,10 @@ public class GameManager {
                 gamePresenter.onTurnCardsOver();
             }
         }
+    }
+
+    private boolean shouldCheckForCardsMatch() {
+        return facingUpCardsWeakHashMap.size() == Constants.NUMBER_MATCHING_CARDS;
     }
 
     public void removeCardsFromMap() {

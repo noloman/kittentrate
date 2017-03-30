@@ -1,4 +1,4 @@
-package mvp.view.kittentrate;
+package mvp.view.game;
 
 import android.widget.ViewFlipper;
 
@@ -11,7 +11,7 @@ import mvp.model.entity.PhotoEntity;
  * Created by Manuel Lorenzo on 21/03/2017.
  */
 
-public interface Contract {
+public interface GameContract {
     interface View {
         void showLoadingView();
 
@@ -32,11 +32,15 @@ public interface Contract {
         void removeViewFlipper();
 
         void showErrorView();
+
+        boolean shouldDispatchTouchEvent();
     }
 
     interface Presenter {
         void onItemClicked(int position, Card card, ViewFlipper viewFlipper);
 
         void removeCardsFromMaps();
+
+        void start();
     }
 }

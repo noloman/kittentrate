@@ -2,8 +2,10 @@ package mvp.model.mapping;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Random;
 
 import mvp.model.entity.Photo;
 import mvp.model.entity.PhotoEntity;
@@ -32,6 +34,7 @@ public class PhotoEntityMapper implements PhotoEntityMapperInterface {
         for (int i = 0; i < count / (2 * Constants.NUMBER_MATCHING_CARDS); i++) {
             newPhotoEntityArrayList1.addAll(photoEntityArrayList);
         }
+        Collections.shuffle(newPhotoEntityArrayList1, new Random(System.nanoTime()));
         return newPhotoEntityArrayList1;
     }
 }

@@ -1,7 +1,6 @@
-package mvp.view.kittentrate;
+package mvp.view.game;
 
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
@@ -27,14 +26,13 @@ import mvp.model.entity.PhotoEntity;
 import mvp.model.utils.Constants;
 import mvp.view.custom.AutofitRecyclerView;
 
-public class GameFragment extends Fragment implements Contract.View, GameAdapter.OnItemClickListener {
-    private static final String SCORE_BUNDLE_KEY = "score";
+public class GameFragment extends Fragment implements GameContract.View, GameAdapter.OnItemClickListener {
+    public static final String SCORE_BUNDLE_KEY = "score";
     private GameAdapter gameAdapter;
     private GamePresenter gamePresenter;
     private Map<ViewFlipper, Card> viewFlipperCardWeakHashMap = new WeakHashMap<>(Constants.NUMBER_MATCHING_CARDS);
     private ProgressDialog loadingDialog;
     private AlertDialog.Builder alertDialogBuilder;
-    private Context context;
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
@@ -42,7 +40,6 @@ public class GameFragment extends Fragment implements Contract.View, GameAdapter
     TextView floatingTextView;
     @BindView(R.id.recycler_view)
     AutofitRecyclerView autofitRecyclerView;
-    private int score;
 
     public GameFragment() {
         // Required empty public constructor
@@ -102,20 +99,14 @@ public class GameFragment extends Fragment implements Contract.View, GameAdapter
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        autofitRecyclerView.setAdapter(gameAdapter);
+        if (autofitRecyclerView.getAdapter() == null) {
+            autofitRecyclerView.setAdapter(gameAdapter);
+        }
         if (savedInstanceState != null && savedInstanceState.getInt(SCORE_BUNDLE_KEY) != 0) {
-            score = savedInstanceState.getInt(SCORE_BUNDLE_KEY);
+            int score = savedInstanceState.getInt(SCORE_BUNDLE_KEY);
             floatingTextView.setText(Integer.toString(score));
         }
     }
-
-    //    @Override
-//    public boolean dispatchTouchEvent(MotionEvent ev) {
-//        if (gamePresenter.shouldDispatchTouchEvent()) {
-//            super.dispatchTouchEvent(ev);
-//        }
-//        return false;
-//    }
 
     @Override
     public void onItemClick(final int position, Card card, final ViewFlipper viewFlipper) {
@@ -125,9 +116,17 @@ public class GameFragment extends Fragment implements Contract.View, GameAdapter
     }
 
     @Override
+    public void onDetach() {
+        if (loadingDialog != null) {
+            loadingDialog = null;
+        }
+        super.onDetach();
+    }
+
+    @Override
     public void showLoadingView() {
         if (loadingDialog == null) {
-            loadingDialog = new ProgressDialog(getActivity());
+            loadingDialog = new ProgressDialog(getContext());
         }
         loadingDialog.setCancelable(false);
         loadingDialog.setTitle(getString(R.string.progress_dialog_loading_images_title));
@@ -139,6 +138,7 @@ public class GameFragment extends Fragment implements Contract.View, GameAdapter
     public void hideLoadingView() {
         if (loadingDialog != null) {
             loadingDialog.dismiss();
+            loadingDialog = null;
         }
     }
 
@@ -164,9 +164,7 @@ public class GameFragment extends Fragment implements Contract.View, GameAdapter
 
     @Override
     public void onGameFinished() {
-        alertDialogBuilder = new AlertDialog.Builder(getContext().getApplicationContext())
-                .setTitle("Finished!");
-        alertDialogBuilder.show();
+        ((GameActivity) (getActivity())).showScoreFragmentDialog(gamePresenter.getScore());
     }
 
     @Override
@@ -192,5 +190,10 @@ public class GameFragment extends Fragment implements Contract.View, GameAdapter
     public void showErrorView() {
         alertDialogBuilder = new AlertDialog.Builder(getActivity());
         alertDialogBuilder.setTitle("There was an unexpected error").setMessage("Please try again").show();
+    }
+
+    @Override
+    public boolean shouldDispatchTouchEvent() {
+        return gamePresenter.shouldDispatchTouchEvent();
     }
 }

@@ -17,10 +17,10 @@ import mvp.model.utils.Constants;
  * Created by Manuel Lorenzo
  */
 
-public class KittentrateLocalDataSource implements KittentrateDataSource {
+public class GameLocalDataSource implements KittentrateDataSource {
     private SQLiteDatabase sqLiteDatabase;
 
-    public KittentrateLocalDataSource() {
+    public GameLocalDataSource() {
         KittentrateDbHelper cardsDbHelper = new KittentrateDbHelper(KittentrateApplication.getContext(), KittentrateScoreDbContract.ScoreEntry.TABLE_NAME, null, 1);
         sqLiteDatabase = cardsDbHelper.getWritableDatabase();
     }

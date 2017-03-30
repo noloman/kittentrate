@@ -1,4 +1,4 @@
-package mvp.view.kittentrate;
+package mvp.view.game;
 
 import android.widget.ViewFlipper;
 
@@ -9,37 +9,38 @@ import mvp.model.entity.Card;
 import mvp.model.entity.PhotoEntity;
 import mvp.model.mapping.PhotoEntityMapper;
 import mvp.model.mapping.PhotoEntityMapperInterface;
-import mvp.model.repository.KittentrateRepository;
-import mvp.model.repository.local.KittentrateLocalDataSource;
-import mvp.model.repository.remote.KittentrateRemoteDataSource;
+import mvp.model.repository.GameRepository;
+import mvp.model.repository.local.GameLocalDataSource;
+import mvp.model.repository.remote.GameRemoteDataSource;
 import mvp.model.rest.NetworkCallback;
 
 /**
  * Created by Manuel Lorenzo on 18/03/2017.
  */
 
-public class GamePresenter implements Contract.Presenter, NetworkCallback {
-    private final Contract.View view;
-    private KittentrateRepository cardsRepository;
+public class GamePresenter implements GameContract.Presenter, NetworkCallback {
+    private final GameContract.View view;
+    private GameRepository cardsRepository;
     private GameManager gameManager;
     private int score;
 
-    GamePresenter(Contract.View view) {
+    GamePresenter(GameContract.View view) {
         // TODO DI
         this.view = view;
         this.gameManager = new GameManager(this);
         PhotoEntityMapperInterface serviceMapper = new PhotoEntityMapper();
-        KittentrateRemoteDataSource remoteDataSource = new KittentrateRemoteDataSource(this, serviceMapper);
-        KittentrateLocalDataSource localDataSource = new KittentrateLocalDataSource();
-        cardsRepository = new KittentrateRepository(localDataSource, remoteDataSource);
+        GameRemoteDataSource gameRemoteDataSource = new GameRemoteDataSource(this, serviceMapper);
+        GameLocalDataSource gameLocalDataSource = new GameLocalDataSource();
+        cardsRepository = new GameRepository(gameLocalDataSource, gameRemoteDataSource);
     }
 
-    void start() {
+    @Override
+    public void start() {
         view.showLoadingView();
         cardsRepository.getPhotos(this);
     }
 
-    public boolean shouldDispatchTouchEvent() {
+    boolean shouldDispatchTouchEvent() {
         return gameManager.shouldDispatchUiEvent();
     }
 

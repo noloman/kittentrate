@@ -30,5 +30,6 @@ ext {
     jUnitVersion = '4.12'
     butterknifeVersion = '8.5.1'
     glideVersion = '3.7.0'
-    androidSupportLibraryVersion = '25.3.0'
+    androidSupportLibraryVersion = '25.3.1'
+    mockitoVersion = '2.7.9'
 }

@@ -3,6 +3,7 @@
     package="manulorenzo.me.kittentrate">
 
     <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:name="mvp.KittentrateApplication"
         android:allowBackup="true"
@@ -18,6 +19,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="mvp.view.kittentrate.GameActivity" />
+        <activity android:name="mvp.view.game.GameActivity" />
+        <activity
+            android:name="mvp.view.scores.ScoresActivity"
+            android:label="@string/title_activity_scores"
+            android:theme="@style/AppTheme"></activity>
     </application>
+
 </manifest>

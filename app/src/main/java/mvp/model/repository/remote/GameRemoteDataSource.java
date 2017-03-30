@@ -16,11 +16,11 @@ import retrofit2.Response;
  * Created by Manuel Lorenzo on 18/03/2017.
  */
 
-public class KittentrateRemoteDataSource implements KittentrateDataSource {
+public class GameRemoteDataSource implements KittentrateDataSource {
     private final NetworkCallback networkCallback;
     private PhotoEntityMapperInterface serviceMapper;
 
-    public KittentrateRemoteDataSource(NetworkCallback networkCallback, PhotoEntityMapperInterface serviceMapper) {
+    public GameRemoteDataSource(NetworkCallback networkCallback, PhotoEntityMapperInterface serviceMapper) {
         this.serviceMapper = serviceMapper;
         this.networkCallback = networkCallback;
     }

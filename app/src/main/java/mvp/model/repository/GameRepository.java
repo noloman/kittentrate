@@ -2,21 +2,23 @@ package mvp.model.repository;
 
 import java.util.List;
 
-import mvp.model.repository.local.KittentrateLocalDataSource;
+import mvp.model.mapping.PhotoEntityMapperInterface;
+import mvp.model.repository.local.GameLocalDataSource;
 import mvp.model.repository.model.PlayerScore;
+import mvp.model.repository.remote.GameRemoteDataSource;
 import mvp.model.rest.NetworkCallback;
 
 /**
  * Created by Manuel Lorenzo on 18/03/2017.
  */
 
-public class KittentrateRepository implements KittentrateDataSource {
+public class GameRepository implements KittentrateDataSource {
     private KittentrateDataSource carsRemoteDataSource;
     private KittentrateDataSource cardsLocalDataSource;
 
-    public KittentrateRepository(KittentrateLocalDataSource localDataSource, KittentrateDataSource remoteDataSource) {
-        carsRemoteDataSource = remoteDataSource;
-        cardsLocalDataSource = localDataSource;
+    public GameRepository(NetworkCallback networkCallback, PhotoEntityMapperInterface entityMapperInterface) {
+        carsRemoteDataSource = new GameLocalDataSource();
+        cardsLocalDataSource = new GameRemoteDataSource(networkCallback, entityMapperInterface);
     }
 
     @Override

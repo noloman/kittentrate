@@ -5,7 +5,7 @@ package mvp.model.entity;
  */
 
 public class Card {
-    String id;
+    private String id;
 
     public String getId() {
         return id;
@@ -23,5 +23,5 @@ public class Card {
         this.imageCoverUrl = imageCoverUrl;
     }
 
-    String imageCoverUrl;
+    private String imageCoverUrl;
 }
