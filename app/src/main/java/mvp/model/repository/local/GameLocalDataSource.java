@@ -1,14 +1,17 @@
 package mvp.model.repository.local;
 
 import android.content.ContentValues;
+import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import mvp.KittentrateApplication;
-import mvp.model.repository.KittentrateDataSource;
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
+import mvp.model.repository.GameDataSource;
 import mvp.model.repository.model.PlayerScore;
 import mvp.model.rest.NetworkCallback;
 import mvp.model.utils.Constants;
@@ -16,12 +19,13 @@ import mvp.model.utils.Constants;
 /**
  * Created by Manuel Lorenzo
  */
-
-public class GameLocalDataSource implements KittentrateDataSource {
+@Singleton
+public class GameLocalDataSource implements GameDataSource {
     private SQLiteDatabase sqLiteDatabase;
 
-    public GameLocalDataSource() {
-        KittentrateDbHelper cardsDbHelper = new KittentrateDbHelper(KittentrateApplication.getContext(), KittentrateScoreDbContract.ScoreEntry.TABLE_NAME, null, 1);
+    @Inject
+    public GameLocalDataSource(Context context) {
+        KittentrateDbHelper cardsDbHelper = new KittentrateDbHelper(context, KittentrateScoreDbContract.ScoreEntry.TABLE_NAME, null, 1);
         sqLiteDatabase = cardsDbHelper.getWritableDatabase();
     }
 

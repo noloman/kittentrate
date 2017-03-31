@@ -4,14 +4,14 @@ import android.widget.ViewFlipper;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 import mvp.model.domain.GameManager;
 import mvp.model.entity.Card;
 import mvp.model.entity.PhotoEntity;
 import mvp.model.mapping.PhotoEntityMapper;
 import mvp.model.mapping.PhotoEntityMapperInterface;
 import mvp.model.repository.GameRepository;
-import mvp.model.repository.local.GameLocalDataSource;
-import mvp.model.repository.remote.GameRemoteDataSource;
 import mvp.model.rest.NetworkCallback;
 
 /**
@@ -20,24 +20,26 @@ import mvp.model.rest.NetworkCallback;
 
 public class GamePresenter implements GameContract.Presenter, NetworkCallback {
     private final GameContract.View view;
-    private GameRepository cardsRepository;
+    private GameRepository gameRepository;
     private GameManager gameManager;
     private int score;
 
-    GamePresenter(GameContract.View view) {
+    @Inject
+    GamePresenter(GameRepository gameRepository, GameContract.View view) {
         // TODO DI
         this.view = view;
         this.gameManager = new GameManager(this);
         PhotoEntityMapperInterface serviceMapper = new PhotoEntityMapper();
-        GameRemoteDataSource gameRemoteDataSource = new GameRemoteDataSource(this, serviceMapper);
-        GameLocalDataSource gameLocalDataSource = new GameLocalDataSource();
-        cardsRepository = new GameRepository(gameLocalDataSource, gameRemoteDataSource);
+        //GameRemoteDataSource gameRemoteDataSource = new GameRemoteDataSource(this, serviceMapper);
+        //GameLocalDataSource gameLocalDataSource = new GameLocalDataSource();
+        //gameRepository = new GameRepository(gameLocalDataSource, gameRemoteDataSource);
+        this.gameRepository = gameRepository;
     }
 
     @Override
     public void start() {
         view.showLoadingView();
-        cardsRepository.getPhotos(this);
+        gameRepository.getPhotos(this);
     }
 
     boolean shouldDispatchTouchEvent() {

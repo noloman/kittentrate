@@ -18,21 +18,29 @@ import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
 
+import javax.inject.Inject;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import manulorenzo.me.kittentrate.R;
+import mvp.model.di.component.DaggerRepositoryComponent;
+import mvp.model.di.module.ApplicationModule;
+import mvp.model.di.module.RepositoryModule;
 import mvp.model.entity.Card;
 import mvp.model.entity.PhotoEntity;
+import mvp.model.repository.GameRepository;
 import mvp.model.utils.Constants;
 import mvp.view.custom.AutofitRecyclerView;
 
 public class GameFragment extends Fragment implements GameContract.View, GameAdapter.OnItemClickListener {
     public static final String SCORE_BUNDLE_KEY = "score";
     private GameAdapter gameAdapter;
-    private GamePresenter gamePresenter;
     private Map<ViewFlipper, Card> viewFlipperCardWeakHashMap = new WeakHashMap<>(Constants.NUMBER_MATCHING_CARDS);
     private ProgressDialog loadingDialog;
     private AlertDialog.Builder alertDialogBuilder;
+    private GamePresenter gamePresenter;
+    @Inject
+    GameRepository gameRepository;
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
@@ -68,7 +76,14 @@ public class GameFragment extends Fragment implements GameContract.View, GameAda
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
-        gamePresenter = new GamePresenter(this);
+
+        DaggerRepositoryComponent.builder()
+                .applicationModule(new ApplicationModule(getActivity().getApplication()))
+                .repositoryModule(new RepositoryModule())
+                .build()
+                .inject(this);
+
+        gamePresenter = new GamePresenter(gameRepository, this);
         gamePresenter.start();
 
         if (toolbar != null) {

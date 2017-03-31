@@ -32,4 +32,5 @@ ext {
     glideVersion = '3.7.0'
     androidSupportLibraryVersion = '25.3.1'
     mockitoVersion = '2.7.9'
+    dagger2Version = '2.9'
 }

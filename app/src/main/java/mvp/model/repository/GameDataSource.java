@@ -9,7 +9,7 @@ import mvp.model.rest.NetworkCallback;
  * Created by Manuel Lorenzo on 18/03/2017.
  */
 
-public interface KittentrateDataSource {
+public interface GameDataSource {
     void getPhotos(NetworkCallback networkCallback);
 
     List<PlayerScore> getTopScores();

@@ -8,6 +8,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import mvp.model.entity.Card;
+import mvp.model.repository.GameRepository;
 
 import static org.mockito.Mockito.verify;
 
@@ -24,12 +25,15 @@ public class GamePresenterTest {
     @Mock
     private
     GameContract.View view;
+
+    @Mock
+    GameRepository gameRepository;
     private GameContract.Presenter gamePresenter;
 
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        gamePresenter = new GamePresenter(view);
+        gamePresenter = new GamePresenter(gameRepository, view);
     }
 
     @Test

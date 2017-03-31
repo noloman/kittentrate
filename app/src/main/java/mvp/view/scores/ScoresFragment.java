@@ -50,9 +50,9 @@ public class ScoresFragment extends Fragment implements ScoresContract.View, Net
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        GameLocalDataSource gameLocalDataSource = new GameLocalDataSource();
+        GameLocalDataSource gameLocalDataSource = new GameLocalDataSource(getContext());
         PhotoEntityMapperInterface serviceMapper = new PhotoEntityMapper();
-        GameRemoteDataSource gameRemoteDataSource = new GameRemoteDataSource(this, serviceMapper);
+        GameRemoteDataSource gameRemoteDataSource = new GameRemoteDataSource();
         GameRepository gameRepository = new GameRepository(gameLocalDataSource, gameRemoteDataSource);
         ScoresLoader scoresLoader = new ScoresLoader(getContext().getApplicationContext(), gameRepository);
         ScoresPresenter scoresPresenter = new ScoresPresenter(this, scoresLoader, getLoaderManager());
