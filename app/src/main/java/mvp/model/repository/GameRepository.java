@@ -38,6 +38,6 @@ public class GameRepository implements GameDataSource {
 
     @Override
     public void addTopScore(PlayerScore playerScore) {
-        remoteDataSource.addTopScore(playerScore);
+        localDataSource.addTopScore(playerScore);
     }
 }

@@ -22,8 +22,11 @@ android {
     keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 
     buildTypes {
-        release {
+        debug {
             minifyEnabled false
+        }
+        release {
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
@@ -40,8 +43,8 @@ dependencies {
     compile "com.google.dagger:dagger:$dagger2Version"
     annotationProcessor "com.google.dagger:dagger-compiler:$dagger2Version"
     provided 'javax.annotation:jsr250-api:1.0'
-    
-    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+
+    androidTestCompile("com.android.support.test.espresso:espresso-core:$espressoVersion", {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     compile "com.android.support:recyclerview-v7:$androidSupportLibraryVersion"
@@ -68,6 +71,8 @@ dependencies {
     testCompile "com.squareup.leakcanary:leakcanary-android:$leakCanaryVersion"
 
     testCompile "org.mockito:mockito-core:$mockitoVersion"
+    compile 'com.google.firebase:firebase-database:10.2.0'
+    compile 'com.google.firebase:firebase-crash:10.2.0'
 }
 
 configurations.all {
@@ -80,3 +85,4 @@ configurations.all {
         }
     }
 }
+apply plugin: 'com.google.gms.google-services'

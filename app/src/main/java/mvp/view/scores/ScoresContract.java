@@ -1,5 +1,9 @@
 package mvp.view.scores;
 
+import java.util.List;
+
+import mvp.model.repository.model.PlayerScore;
+
 /**
  * Created by Manuel Lorenzo
  */
@@ -12,7 +16,7 @@ public interface ScoresContract {
 
         void hideLoadingView();
 
-        void showScores();
+        void showScores(List<PlayerScore> data);
     }
 
     interface Presenter {

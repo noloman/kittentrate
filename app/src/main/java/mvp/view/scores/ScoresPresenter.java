@@ -40,7 +40,7 @@ public class ScoresPresenter implements ScoresContract.Presenter, LoaderManager.
         if (data.isEmpty()) {
             view.showEmptyView();
         } else {
-            view.showScores();
+            view.showScores(data);
         }
     }
 

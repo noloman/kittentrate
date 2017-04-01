@@ -26,7 +26,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setStrictMode();
+        // setStrictMode();
         setContentView(R.layout.main_activity);
         ButterKnife.bind(this);
     }

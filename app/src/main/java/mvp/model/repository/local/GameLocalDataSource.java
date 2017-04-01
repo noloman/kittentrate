@@ -25,8 +25,8 @@ public class GameLocalDataSource implements GameDataSource {
 
     @Inject
     public GameLocalDataSource(Context context) {
-        KittentrateDbHelper cardsDbHelper = new KittentrateDbHelper(context, KittentrateScoreDbContract.ScoreEntry.TABLE_NAME, null, 1);
-        sqLiteDatabase = cardsDbHelper.getWritableDatabase();
+        GameDbHelper gameDbHelper = new GameDbHelper(context);
+        sqLiteDatabase = gameDbHelper.getWritableDatabase();
     }
 
     @Override
@@ -37,18 +37,18 @@ public class GameLocalDataSource implements GameDataSource {
     @Override
     public List<PlayerScore> getTopScores() {
         String[] projection = {
-                KittentrateScoreDbContract.ScoreEntry._ID,
-                KittentrateScoreDbContract.ScoreEntry.COLUMN_NAME_PLAYER_NAME,
-                KittentrateScoreDbContract.ScoreEntry.COLUMN_NAME_SCORE
+                GameScoreDbContract.ScoreEntry._ID,
+                GameScoreDbContract.ScoreEntry.COLUMN_NAME_PLAYER_NAME,
+                GameScoreDbContract.ScoreEntry.COLUMN_NAME_SCORE
         };
 
-        Cursor c = sqLiteDatabase.query(KittentrateScoreDbContract.ScoreEntry.TABLE_NAME, projection, null, null, null, null, null);
+        Cursor c = sqLiteDatabase.query(GameScoreDbContract.ScoreEntry.TABLE_NAME, projection, null, null, null, null, null);
 
         ArrayList<PlayerScore> topScoresList = new ArrayList<>(Constants.NUMBER_TOP_SCORES);
         if (c != null && c.getCount() > 0) {
             while (c.moveToNext()) {
-                int score = c.getInt(c.getColumnIndexOrThrow(KittentrateScoreDbContract.ScoreEntry.COLUMN_NAME_SCORE));
-                String playerName = c.getString(c.getColumnIndexOrThrow(KittentrateScoreDbContract.ScoreEntry.COLUMN_NAME_PLAYER_NAME));
+                int score = c.getInt(c.getColumnIndexOrThrow(GameScoreDbContract.ScoreEntry.COLUMN_NAME_SCORE));
+                String playerName = c.getString(c.getColumnIndexOrThrow(GameScoreDbContract.ScoreEntry.COLUMN_NAME_PLAYER_NAME));
 
                 PlayerScore playerScore = new PlayerScore(playerName, score);
                 topScoresList.add(playerScore);
@@ -65,8 +65,8 @@ public class GameLocalDataSource implements GameDataSource {
     @Override
     public void addTopScore(PlayerScore playerScore) {
         ContentValues contentValues = new ContentValues();
-        contentValues.put(KittentrateScoreDbContract.ScoreEntry.COLUMN_NAME_PLAYER_NAME, playerScore.getPlayerName());
-        contentValues.put(KittentrateScoreDbContract.ScoreEntry.COLUMN_NAME_SCORE, playerScore.getPlayerScore());
-        sqLiteDatabase.insert(KittentrateScoreDbContract.ScoreEntry.TABLE_NAME, null, contentValues);
+        contentValues.put(GameScoreDbContract.ScoreEntry.COLUMN_NAME_PLAYER_NAME, playerScore.getPlayerName());
+        contentValues.put(GameScoreDbContract.ScoreEntry.COLUMN_NAME_SCORE, playerScore.getPlayerScore());
+        sqLiteDatabase.insert(GameScoreDbContract.ScoreEntry.TABLE_NAME, null, contentValues);
     }
 }

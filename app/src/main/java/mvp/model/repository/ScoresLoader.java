@@ -13,6 +13,7 @@ import mvp.model.repository.model.PlayerScore;
 
 public class ScoresLoader extends AsyncTaskLoader<List<PlayerScore>> {
     private final GameRepository gameRepository;
+    private List<PlayerScore> data;
 
     public ScoresLoader(Context context, GameRepository gameRepository) {
         super(context);
@@ -26,7 +27,13 @@ public class ScoresLoader extends AsyncTaskLoader<List<PlayerScore>> {
 
     @Override
     protected void onStartLoading() {
-        super.onStartLoading();
+        if (data != null) {
+            // Use cached data
+            deliverResult(data);
+        } else {
+            // We have no data, so kick off loading it
+            forceLoad();
+        }
     }
 
     @Override
@@ -36,7 +43,8 @@ public class ScoresLoader extends AsyncTaskLoader<List<PlayerScore>> {
         }
 
         if (isStarted()) {
-            super.deliverResult(data);
+            this.data = data;
+            super.deliverResult(this.data);
         }
     }
 }

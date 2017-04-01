@@ -22,8 +22,7 @@
         <activity android:name="mvp.view.game.GameActivity" />
         <activity
             android:name="mvp.view.scores.ScoresActivity"
-            android:label="@string/title_activity_scores"
-            android:theme="@style/AppTheme"></activity>
+            android:label="@string/title_activity_scores" />
     </application>
 
 </manifest>
