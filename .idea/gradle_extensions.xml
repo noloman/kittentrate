@@ -9,6 +9,7 @@
             <prop name="androidSupportLibraryVersion">25.3.1</prop>
             <prop name="retrofitVersion">2.1.0</prop>
             <prop name="mockitoVersion">2.7.9</prop>
+            <prop name="firebaseVersion">10.2.0</prop>
             <prop name="glideVersion">3.7.0</prop>
             <prop name="leakCanaryVersion">1.5</prop>
             <prop name="gsonVersion">2.7</prop>

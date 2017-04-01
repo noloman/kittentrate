@@ -71,7 +71,7 @@ dependencies {
     testCompile "com.squareup.leakcanary:leakcanary-android:$leakCanaryVersion"
 
     testCompile "org.mockito:mockito-core:$mockitoVersion"
-    compile "com.google.firebase:firebase-crash:$firebaseVersion"
+    releaseCompile "com.google.firebase:firebase-crash:$firebaseVersion"
 }
 
 configurations.all {
