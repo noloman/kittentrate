@@ -34,4 +34,5 @@ ext {
     mockitoVersion = '2.7.9'
     dagger2Version = '2.9'
     espressoVersion = '2.2.2'
+    firebaseVersion = '10.2.0'
 }
