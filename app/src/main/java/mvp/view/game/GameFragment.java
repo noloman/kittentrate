@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -29,10 +30,12 @@ import mvp.model.di.module.RepositoryModule;
 import mvp.model.entity.Card;
 import mvp.model.entity.PhotoEntity;
 import mvp.model.repository.GameRepository;
+import mvp.model.repository.model.PlayerScore;
 import mvp.model.utils.Constants;
 import mvp.view.custom.AutofitRecyclerView;
+import mvp.view.custom.NameScoreDialogFragment;
 
-public class GameFragment extends Fragment implements GameContract.View, GameAdapter.OnItemClickListener {
+public class GameFragment extends Fragment implements GameContract.View, GameAdapter.OnItemClickListener, NameScoreDialogFragment.NameScoreKeyListener {
     public static final String SCORE_BUNDLE_KEY = "score";
     private GameAdapter gameAdapter;
     private Map<ViewFlipper, Card> viewFlipperCardWeakHashMap = new WeakHashMap<>(Constants.NUMBER_MATCHING_CARDS);
@@ -179,7 +182,7 @@ public class GameFragment extends Fragment implements GameContract.View, GameAda
 
     @Override
     public void onGameFinished() {
-        ((GameActivity) (getActivity())).showScoreFragmentDialog(gamePresenter.getScore());
+        showScoreFragmentDialog(gamePresenter.getScore());
     }
 
     @Override
@@ -210,5 +213,18 @@ public class GameFragment extends Fragment implements GameContract.View, GameAda
     @Override
     public boolean shouldDispatchTouchEvent() {
         return gamePresenter.shouldDispatchTouchEvent();
+    }
+
+    @Override
+    public void onEnterKeyPressed(PlayerScore playerScore) {
+        gameRepository.addTopScore(playerScore);
+        getActivity().finish();
+    }
+
+    private void showScoreFragmentDialog(int score) {
+        FragmentManager fm = getActivity().getSupportFragmentManager();
+        NameScoreDialogFragment nameScoreDialogFragment = NameScoreDialogFragment.newInstance(score);
+        nameScoreDialogFragment.setTargetFragment(this, 0);
+        nameScoreDialogFragment.show(fm, "fragment_score");
     }
 }
