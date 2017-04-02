@@ -11,6 +11,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import manulorenzo.me.kittentrate.R;
 import mvp.model.repository.model.PlayerScore;
 
 /**
@@ -20,12 +21,12 @@ import mvp.model.repository.model.PlayerScore;
 class ScoresAdapter extends RecyclerView.Adapter<ScoresAdapter.ScoresViewHolder> {
     private List<PlayerScore> scoreList;
 
-    ScoresAdapter(List<PlayerScore> playerScores) {
-        scoreList = playerScores;
+    ScoresAdapter() {
     }
 
     public void setData(List<PlayerScore> playerScores) {
         scoreList = playerScores;
+        notifyDataSetChanged();
     }
 
     @Override
@@ -34,7 +35,7 @@ class ScoresAdapter extends RecyclerView.Adapter<ScoresAdapter.ScoresViewHolder>
         LayoutInflater inflater = LayoutInflater.from(parentContext);
 
         // Inflate the custom layout
-        View view = inflater.inflate(android.R.layout.simple_list_item_1, parent, false);
+        View view = inflater.inflate(R.layout.score_item_layout, parent, false);
         return new ScoresViewHolder(view);
     }
 
@@ -49,7 +50,7 @@ class ScoresAdapter extends RecyclerView.Adapter<ScoresAdapter.ScoresViewHolder>
     }
 
     static class ScoresViewHolder extends RecyclerView.ViewHolder {
-        @BindView(android.R.id.text1)
+        @BindView(R.id.score_textview)
         TextView textView;
 
         ScoresViewHolder(View itemView) {

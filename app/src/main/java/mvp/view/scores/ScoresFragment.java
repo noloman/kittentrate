@@ -3,8 +3,10 @@ package mvp.view.scores;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,7 +33,10 @@ public class ScoresFragment extends Fragment implements ScoresContract.View, Net
     RecyclerView recyclerView;
     @BindView(R.id.empty_textview)
     TextView emptyTextView;
-    ScoresAdapter scoresAdapter;
+    private ScoresAdapter scoresAdapter;
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
+    private ScoresPresenter scoresPresenter;
 
     public ScoresFragment() {
     }
@@ -46,11 +51,19 @@ public class ScoresFragment extends Fragment implements ScoresContract.View, Net
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
-        View view = inflater.inflate(R.layout.fragment_scores, container, false);
+        View view = inflater.inflate(R.layout.scores_fragment, container, false);
         ButterKnife.bind(this, view);
-        recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext().getApplicationContext(), RecyclerView.VERTICAL, false));
+        ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
         return view;
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        if (recyclerView.getAdapter() == null) {
+            scoresAdapter = new ScoresAdapter();
+            recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        }
     }
 
     @Override
@@ -63,7 +76,7 @@ public class ScoresFragment extends Fragment implements ScoresContract.View, Net
         GameRepository gameRepository = new GameRepository(gameLocalDataSource, gameRemoteDataSource);
 
         ScoresLoader scoresLoader = new ScoresLoader(getContext().getApplicationContext(), gameRepository);
-        ScoresPresenter scoresPresenter = new ScoresPresenter(this, scoresLoader, getLoaderManager());
+        scoresPresenter = new ScoresPresenter(this, scoresLoader, getLoaderManager());
         scoresPresenter.start();
     }
 
@@ -81,13 +94,10 @@ public class ScoresFragment extends Fragment implements ScoresContract.View, Net
     public void showScores(List<PlayerScore> data) {
         emptyTextView.setVisibility(View.GONE);
         recyclerView.setVisibility(View.VISIBLE);
-        if (scoresAdapter == null) {
-            scoresAdapter = new ScoresAdapter(data);
+        if (recyclerView.getAdapter() == null) {
             recyclerView.setAdapter(scoresAdapter);
-        } else {
-            scoresAdapter.setData(data);
-            scoresAdapter.notifyDataSetChanged();
         }
+        scoresAdapter.setData(data);
     }
 
     @Override

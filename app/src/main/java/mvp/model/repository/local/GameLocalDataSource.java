@@ -42,7 +42,7 @@ public class GameLocalDataSource implements GameDataSource {
                 GameScoreDbContract.ScoreEntry.COLUMN_NAME_SCORE
         };
 
-        Cursor c = sqLiteDatabase.query(GameScoreDbContract.ScoreEntry.TABLE_NAME, projection, null, null, null, null, null);
+        Cursor c = sqLiteDatabase.query(GameScoreDbContract.ScoreEntry.TABLE_NAME, projection, null, null, null, null, GameScoreDbContract.ScoreEntry.COLUMN_NAME_SCORE + " DESC");
 
         ArrayList<PlayerScore> topScoresList = new ArrayList<>(Constants.NUMBER_TOP_SCORES);
         if (c != null && c.getCount() > 0) {

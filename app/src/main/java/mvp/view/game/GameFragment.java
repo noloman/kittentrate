@@ -88,17 +88,13 @@ public class GameFragment extends Fragment implements GameContract.View, GameAda
         }
 
         gameAdapter = new GameAdapter(this, getContext().getApplicationContext());
+
+        gamePresenter.start();
     }
 
     @Override
     public void setPresenter(GamePresenter presenter) {
         gamePresenter = presenter;
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        gamePresenter.start();
     }
 
     @Override
