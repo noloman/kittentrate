@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -24,12 +23,11 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import manulorenzo.me.kittentrate.R;
-import mvp.model.di.component.DaggerRepositoryComponent;
-import mvp.model.di.module.ApplicationModule;
-import mvp.model.di.module.RepositoryModule;
+import mvp.GameApplication;
+import mvp.model.di.component.DaggerGamePresenterComponent;
+import mvp.model.di.module.GamePresenterModule;
 import mvp.model.entity.Card;
 import mvp.model.entity.PhotoEntity;
-import mvp.model.repository.GameRepository;
 import mvp.model.repository.model.PlayerScore;
 import mvp.model.utils.Constants;
 import mvp.view.custom.AutofitRecyclerView;
@@ -41,9 +39,8 @@ public class GameFragment extends Fragment implements GameContract.View, GameAda
     private Map<ViewFlipper, Card> viewFlipperCardWeakHashMap = new WeakHashMap<>(Constants.NUMBER_MATCHING_CARDS);
     private ProgressDialog loadingDialog;
     private AlertDialog.Builder alertDialogBuilder;
-    private GamePresenter gamePresenter;
     @Inject
-    GameRepository gameRepository;
+    GamePresenter gamePresenter;
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
@@ -80,20 +77,28 @@ public class GameFragment extends Fragment implements GameContract.View, GameAda
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
 
-        DaggerRepositoryComponent.builder()
-                .applicationModule(new ApplicationModule(getActivity().getApplication()))
-                .repositoryModule(new RepositoryModule())
+        DaggerGamePresenterComponent.builder()
+                .repositoryComponent(((GameApplication) getActivity().getApplication()).getRepositoryComponent())
+                .gamePresenterModule(new GamePresenterModule(this))
                 .build()
                 .inject(this);
-
-        gamePresenter = new GamePresenter(gameRepository, this);
-        gamePresenter.start();
 
         if (toolbar != null) {
             ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
         }
 
         gameAdapter = new GameAdapter(this, getContext().getApplicationContext());
+    }
+
+    @Override
+    public void setPresenter(GamePresenter presenter) {
+        gamePresenter = presenter;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        gamePresenter.start();
     }
 
     @Override
@@ -128,9 +133,11 @@ public class GameFragment extends Fragment implements GameContract.View, GameAda
 
     @Override
     public void onItemClick(final int position, Card card, final ViewFlipper viewFlipper) {
-        viewFlipper.showNext();
-        viewFlipperCardWeakHashMap.put(viewFlipper, card);
-        gamePresenter.onItemClicked(position, card, viewFlipper);
+        if (!viewFlipperCardWeakHashMap.containsKey(viewFlipper)) {
+            viewFlipper.showNext();
+            viewFlipperCardWeakHashMap.put(viewFlipper, card);
+            gamePresenter.onItemClicked(position, card, viewFlipper);
+        }
     }
 
     @Override
@@ -217,14 +224,13 @@ public class GameFragment extends Fragment implements GameContract.View, GameAda
 
     @Override
     public void onEnterKeyPressed(PlayerScore playerScore) {
-        gameRepository.addTopScore(playerScore);
+        gamePresenter.onScoredEntered(playerScore);
         getActivity().finish();
     }
 
     private void showScoreFragmentDialog(int score) {
-        FragmentManager fm = getActivity().getSupportFragmentManager();
         NameScoreDialogFragment nameScoreDialogFragment = NameScoreDialogFragment.newInstance(score);
         nameScoreDialogFragment.setTargetFragment(this, 0);
-        nameScoreDialogFragment.show(fm, "fragment_score");
+        nameScoreDialogFragment.show(getActivity().getSupportFragmentManager(), "fragment_score");
     }
 }

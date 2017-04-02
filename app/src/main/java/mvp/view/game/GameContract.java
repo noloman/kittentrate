@@ -6,13 +6,15 @@ import java.util.List;
 
 import mvp.model.entity.Card;
 import mvp.model.entity.PhotoEntity;
+import mvp.model.repository.model.PlayerScore;
+import mvp.view.BaseView;
 
 /**
  * Created by Manuel Lorenzo on 21/03/2017.
  */
 
 public interface GameContract {
-    interface View {
+    interface View extends BaseView<GamePresenter> {
         void showLoadingView();
 
         void hideLoadingView();
@@ -42,5 +44,19 @@ public interface GameContract {
         void removeCardsFromMaps();
 
         void start();
+
+        void onScoredEntered(PlayerScore playerScore);
+
+        void notifyAdapterItemChanged(Integer key);
+
+        void onTurnCardsOver();
+
+        void removeViewFlipper();
+
+        void onGameFinished();
+
+        void onGameScoreIncreased(int gameScore);
+
+        void notifyAdapterItemRemoved(String id);
     }
 }

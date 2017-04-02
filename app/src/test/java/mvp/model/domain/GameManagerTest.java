@@ -6,6 +6,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import mvp.model.entity.Card;
+import mvp.model.entity.Game;
 import mvp.view.game.GamePresenter;
 
 import static org.mockito.ArgumentMatchers.anyInt;
@@ -25,6 +26,8 @@ public class GameManagerTest {
     private Card card1;
     @Mock
     private Card card2;
+    @Mock
+    private Game game;
 
     private GameManager gameManager;
 

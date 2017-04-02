@@ -7,6 +7,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import mvp.model.domain.GameManager;
 import mvp.model.entity.Card;
 import mvp.model.repository.GameRepository;
 
@@ -25,9 +26,13 @@ public class GamePresenterTest {
     @Mock
     private
     GameContract.View view;
-
     @Mock
+    private
+    GameManager gameManager;
+    @Mock
+    private
     GameRepository gameRepository;
+
     private GameContract.Presenter gamePresenter;
 
     @Before

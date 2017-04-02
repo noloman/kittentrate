@@ -26,9 +26,8 @@ public class GameApplication extends Application {
         LeakCanary.install(this);
         // Normal app init code...
         repositoryComponent = DaggerRepositoryComponent.builder()
-                .applicationModule(new ApplicationModule((getApplicationContext())))
+                .applicationModule(new ApplicationModule(getApplicationContext()))
                 .build();
-
     }
 
     public RepositoryComponent getRepositoryComponent() {

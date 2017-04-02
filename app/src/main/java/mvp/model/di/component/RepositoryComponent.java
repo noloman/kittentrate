@@ -6,7 +6,6 @@ import dagger.Component;
 import mvp.model.di.module.ApplicationModule;
 import mvp.model.di.module.RepositoryModule;
 import mvp.model.repository.GameRepository;
-import mvp.view.game.GameFragment;
 
 /**
  * Created by Manuel Lorenzo
@@ -15,6 +14,4 @@ import mvp.view.game.GameFragment;
 @Component(modules = {RepositoryModule.class, ApplicationModule.class})
 public interface RepositoryComponent {
     GameRepository getGameRepository();
-
-    void inject(GameFragment gameFragment);
 }
