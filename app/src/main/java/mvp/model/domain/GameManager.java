@@ -45,15 +45,13 @@ public class GameManager implements GameDomainContract.Manager {
                     }
                     facingUpCardsWeakHashMap.clear();
                     increaseGameScore();
-                    gamePresenter.onGameScoreIncreased(getGameScore());
-                    if (isGameFinished()) {
-                        gamePresenter.onGameFinished();
-                    }
                     gamePresenter.removeViewFlipper();
                 } else {
                     // Match not found; turn cards over and start from the beginning.
+                    decreaseGameScore();
                     gamePresenter.onTurnCardsOver();
                 }
+                gamePresenter.onGameScoreChanged(getGameScore());
             }
         }
     }
@@ -75,12 +73,12 @@ public class GameManager implements GameDomainContract.Manager {
         return facingUpCardsWeakHashMap.size() == Constants.NUMBER_MATCHING_CARDS;
     }
 
-    private boolean isGameFinished() {
-        return game.getScore() == Integer.valueOf(Constants.CARDS_PER_PAGE) / Constants.NUMBER_MATCHING_CARDS;
-    }
-
     private void increaseGameScore() {
         game.setScore(game.getScore() + 1);
+    }
+
+    private void decreaseGameScore() {
+        game.setScore(game.getScore() - 1);
     }
 
     private int getGameScore() {

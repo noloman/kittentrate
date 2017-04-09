@@ -51,7 +51,9 @@ class ScoresAdapter extends RecyclerView.Adapter<ScoresAdapter.ScoresViewHolder>
 
     static class ScoresViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.score_textview)
-        TextView textView;
+        TextView scoreTextView;
+        @BindView(R.id.name_textview)
+        TextView nameTextView;
 
         ScoresViewHolder(View itemView) {
             super(itemView);
@@ -59,7 +61,8 @@ class ScoresAdapter extends RecyclerView.Adapter<ScoresAdapter.ScoresViewHolder>
         }
 
         void bind(PlayerScore playerScore) {
-            textView.setText(playerScore.getPlayerName() + ", " + playerScore.getPlayerScore());
+            nameTextView.setText(playerScore.getPlayerName());
+            scoreTextView.setText(playerScore.getPlayerScore());
         }
     }
 }

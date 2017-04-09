@@ -1,0 +1,12 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/game_menu_item"
+            android:icon="@android:drawable/ic_secure"
+            android:title="Game" />
+        <item
+            android:id="@+id/scores_menu_item"
+            android:icon="@android:drawable/ic_partial_secure"
+            android:title="Scores" />
+    </group>
+</menu>

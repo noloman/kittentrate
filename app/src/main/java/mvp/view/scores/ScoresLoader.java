@@ -1,10 +1,11 @@
-package mvp.model.repository;
+package mvp.view.scores;
 
 import android.content.Context;
 import android.support.v4.content.AsyncTaskLoader;
 
 import java.util.List;
 
+import mvp.model.repository.GameRepository;
 import mvp.model.repository.model.PlayerScore;
 
 /**
@@ -13,9 +14,9 @@ import mvp.model.repository.model.PlayerScore;
 
 public class ScoresLoader extends AsyncTaskLoader<List<PlayerScore>> {
     private final GameRepository gameRepository;
-    private List<PlayerScore> data;
+    private List<PlayerScore> scoreList;
 
-    public ScoresLoader(Context context, GameRepository gameRepository) {
+    ScoresLoader(Context context, GameRepository gameRepository) {
         super(context);
         this.gameRepository = gameRepository;
     }
@@ -27,11 +28,11 @@ public class ScoresLoader extends AsyncTaskLoader<List<PlayerScore>> {
 
     @Override
     protected void onStartLoading() {
-        if (data != null) {
-            // Use cached data
-            deliverResult(data);
+        if (scoreList != null) {
+            // Use cached scoreList
+            deliverResult(scoreList);
         } else {
-            // We have no data, so kick off loading it
+            // We have no scoreList, so kick off loading it
             forceLoad();
         }
     }
@@ -43,8 +44,8 @@ public class ScoresLoader extends AsyncTaskLoader<List<PlayerScore>> {
         }
 
         if (isStarted()) {
-            this.data = data;
-            super.deliverResult(this.data);
+            scoreList = data;
+            super.deliverResult(this.scoreList);
         }
     }
 }

@@ -19,7 +19,7 @@
             <prop name="espressoVersion">2.2.2</prop>
             <prop name="squareLoggingInterceptorVersion">3.6.0</prop>
             <prop name="retrofitConverterJsonVersion">2.1.0</prop>
-            <prop name="gradlePluginVersion">2.4.0-alpha3</prop>
+            <prop name="gradlePluginVersion">2.4.0-alpha4</prop>
             <task name="projects" type="org.gradle.api.tasks.diagnostics.ProjectReportTask">Displays the sub-projects of root project 'kittentrate'.&lt;p&gt;&lt;i&gt;Task group: help&lt;i&gt;</task>
             <task name="resolveDebugDependencies" type="com.android.build.gradle.internal.tasks.ResolveDependenciesTask">&lt;i&gt;Task group: other&lt;i&gt;</task>
             <task name="transformClassesAndResourcesWithProguardForRelease" type="com.android.build.gradle.internal.pipeline.TransformTask">&lt;i&gt;Task group: other&lt;i&gt;</task>
@@ -95,6 +95,7 @@
             <task name="incrementalReleaseJavaCompilationSafeguard" type="com.android.build.gradle.tasks.factory.IncrementalSafeguard">&lt;i&gt;Task group: other&lt;i&gt;</task>
             <task name="help" type="org.gradle.configuration.Help">Displays a help message.&lt;p&gt;&lt;i&gt;Task group: help&lt;i&gt;</task>
             <task name="compileReleaseUnitTestSources">&lt;i&gt;Task group: build&lt;i&gt;</task>
+            <task name="extractJava8LangSupportJar" type="com.android.build.gradle.internal.tasks.ExtractJava8LangSupportJar">&lt;i&gt;Task group: other&lt;i&gt;</task>
             <task name="installDebugAndroidTest" type="com.android.build.gradle.internal.tasks.InstallVariantTask">Installs the android (on device) tests for the Debug build.&lt;p&gt;&lt;i&gt;Task group: Install&lt;i&gt;</task>
             <task name="transformClassesWithDexBuilderForDebugAndroidTest" type="com.android.build.gradle.internal.pipeline.TransformTask">&lt;i&gt;Task group: other&lt;i&gt;</task>
             <task name="mergeDebugAssets" type="com.android.build.gradle.tasks.MergeSourceSetFolders">&lt;i&gt;Task group: other&lt;i&gt;</task>
@@ -198,7 +199,7 @@
             <ext name="defaultArtifacts" type="org.gradle.api.internal.plugins.DefaultArtifactPublicationSet" />
             <ext name="reporting" type="org.gradle.api.reporting.ReportingExtension" />
             <ext name="android" type="com.android.build.gradle.AppExtension" />
-            <prop name="gradlePluginVersion">2.4.0-alpha3</prop>
+            <prop name="gradlePluginVersion">2.4.0-alpha4</prop>
             <task name="projects" type="org.gradle.api.tasks.diagnostics.ProjectReportTask">Displays the sub-projects of project ':app'.&lt;p&gt;&lt;i&gt;Task group: help&lt;i&gt;</task>
             <task name="resolveDebugDependencies" type="com.android.build.gradle.internal.tasks.ResolveDependenciesTask">&lt;i&gt;Task group: other&lt;i&gt;</task>
             <task name="transformClassesAndResourcesWithProguardForRelease" type="com.android.build.gradle.internal.pipeline.TransformTask">&lt;i&gt;Task group: other&lt;i&gt;</task>
@@ -272,6 +273,7 @@
             <task name="incrementalReleaseJavaCompilationSafeguard" type="com.android.build.gradle.tasks.factory.IncrementalSafeguard">&lt;i&gt;Task group: other&lt;i&gt;</task>
             <task name="help" type="org.gradle.configuration.Help">Displays a help message.&lt;p&gt;&lt;i&gt;Task group: help&lt;i&gt;</task>
             <task name="compileReleaseUnitTestSources">&lt;i&gt;Task group: build&lt;i&gt;</task>
+            <task name="extractJava8LangSupportJar" type="com.android.build.gradle.internal.tasks.ExtractJava8LangSupportJar">&lt;i&gt;Task group: other&lt;i&gt;</task>
             <task name="installDebugAndroidTest" type="com.android.build.gradle.internal.tasks.InstallVariantTask">Installs the android (on device) tests for the Debug build.&lt;p&gt;&lt;i&gt;Task group: Install&lt;i&gt;</task>
             <task name="transformClassesWithDexBuilderForDebugAndroidTest" type="com.android.build.gradle.internal.pipeline.TransformTask">&lt;i&gt;Task group: other&lt;i&gt;</task>
             <task name="mergeDebugAssets" type="com.android.build.gradle.tasks.MergeSourceSetFolders">&lt;i&gt;Task group: other&lt;i&gt;</task>

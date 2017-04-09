@@ -8,9 +8,6 @@ import android.database.sqlite.SQLiteDatabase;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
-
 import mvp.model.repository.GameDataSource;
 import mvp.model.repository.model.PlayerScore;
 import mvp.model.rest.NetworkCallback;
@@ -19,12 +16,18 @@ import mvp.model.utils.Constants;
 /**
  * Created by Manuel Lorenzo
  */
-@Singleton
 public class GameLocalDataSource implements GameDataSource {
     private SQLiteDatabase sqLiteDatabase;
+    private static GameLocalDataSource gameLocalDataSource;
 
-    @Inject
-    public GameLocalDataSource(Context context) {
+    public static GameLocalDataSource getInstance(Context context) {
+        if (gameLocalDataSource == null) {
+            gameLocalDataSource = new GameLocalDataSource(context);
+        }
+        return gameLocalDataSource;
+    }
+
+    private GameLocalDataSource(Context context) {
         GameDbHelper gameDbHelper = new GameDbHelper(context);
         sqLiteDatabase = gameDbHelper.getWritableDatabase();
     }

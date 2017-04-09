@@ -6,7 +6,6 @@ import android.support.v4.content.Loader;
 
 import java.util.List;
 
-import mvp.model.repository.ScoresLoader;
 import mvp.model.repository.model.PlayerScore;
 
 /**

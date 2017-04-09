@@ -1,4 +1,4 @@
-package mvp.view.custom;
+package mvp.view.game;
 
 import android.content.DialogInterface;
 import android.graphics.Point;
@@ -20,7 +20,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import manulorenzo.me.kittentrate.R;
 import mvp.model.repository.model.PlayerScore;
-import mvp.view.game.GameFragment;
 
 /**
  * Created by Manuel Lorenzo

@@ -4,16 +4,11 @@ import android.app.Application;
 
 import com.squareup.leakcanary.LeakCanary;
 
-import mvp.model.di.component.DaggerRepositoryComponent;
-import mvp.model.di.component.RepositoryComponent;
-import mvp.model.di.module.ApplicationModule;
-
 /**
  * Created by Manuel Lorenzo
  */
 
 public class GameApplication extends Application {
-    private RepositoryComponent repositoryComponent;
 
     @Override
     public void onCreate() {
@@ -24,13 +19,6 @@ public class GameApplication extends Application {
             return;
         }
         LeakCanary.install(this);
-        // Normal app init code...
-        repositoryComponent = DaggerRepositoryComponent.builder()
-                .applicationModule(new ApplicationModule(getApplicationContext()))
-                .build();
-    }
-
-    public RepositoryComponent getRepositoryComponent() {
-        return repositoryComponent;
+        // Normal app init code...}
     }
 }

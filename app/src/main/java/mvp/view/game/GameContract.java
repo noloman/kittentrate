@@ -25,10 +25,6 @@ public interface GameContract {
 
         void notifyAdapterItemRemoved(String id);
 
-        void onGameFinished();
-
-        void onScoreIncreased(int score);
-
         void setAdapterData(List<PhotoEntity> photoEntityList);
 
         void removeViewFlipper();
@@ -36,6 +32,10 @@ public interface GameContract {
         void showErrorView();
 
         boolean shouldDispatchTouchEvent();
+
+        void onScoreChanged(int gameScore);
+
+        void checkGameFinished();
     }
 
     interface Presenter {
@@ -53,9 +53,7 @@ public interface GameContract {
 
         void removeViewFlipper();
 
-        void onGameFinished();
-
-        void onGameScoreIncreased(int gameScore);
+        void onGameScoreChanged(int gameScore);
 
         void notifyAdapterItemRemoved(String id);
     }

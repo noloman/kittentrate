@@ -6,8 +6,6 @@ import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,32 +16,24 @@ import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
 
-import javax.inject.Inject;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import manulorenzo.me.kittentrate.R;
-import mvp.GameApplication;
-import mvp.model.di.component.DaggerGamePresenterComponent;
-import mvp.model.di.module.GamePresenterModule;
+import mvp.model.di.Injection;
 import mvp.model.entity.Card;
 import mvp.model.entity.PhotoEntity;
+import mvp.model.repository.GameRepository;
 import mvp.model.repository.model.PlayerScore;
 import mvp.model.utils.Constants;
 import mvp.view.custom.AutofitRecyclerView;
-import mvp.view.custom.NameScoreDialogFragment;
 
 public class GameFragment extends Fragment implements GameContract.View, GameAdapter.OnItemClickListener, NameScoreDialogFragment.NameScoreKeyListener {
     public static final String SCORE_BUNDLE_KEY = "score";
     private GameAdapter gameAdapter;
     private Map<ViewFlipper, Card> viewFlipperCardWeakHashMap = new WeakHashMap<>(Constants.NUMBER_MATCHING_CARDS);
     private ProgressDialog loadingDialog;
-    private AlertDialog.Builder alertDialogBuilder;
-    @Inject
-    GamePresenter gamePresenter;
+    private GamePresenter gamePresenter;
 
-    @BindView(R.id.toolbar)
-    Toolbar toolbar;
     @BindView(R.id.floating_textview)
     TextView floatingTextView;
     @BindView(R.id.recycler_view)
@@ -77,16 +67,9 @@ public class GameFragment extends Fragment implements GameContract.View, GameAda
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
 
-        DaggerGamePresenterComponent.builder()
-                .repositoryComponent(((GameApplication) getActivity().getApplication()).getRepositoryComponent())
-                .gamePresenterModule(new GamePresenterModule(this))
-                .build()
-                .inject(this);
+        GameRepository gameRepository = Injection.provideRepository(getContext().getApplicationContext());
 
-        if (toolbar != null) {
-            ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
-        }
-
+        gamePresenter = new GamePresenter(gameRepository, this);
         gameAdapter = new GameAdapter(this, getContext().getApplicationContext());
 
         gamePresenter.start();
@@ -184,16 +167,6 @@ public class GameFragment extends Fragment implements GameContract.View, GameAda
     }
 
     @Override
-    public void onGameFinished() {
-        showScoreFragmentDialog(gamePresenter.getScore());
-    }
-
-    @Override
-    public void onScoreIncreased(int score) {
-        floatingTextView.setText(Integer.toString(score));
-    }
-
-    @Override
     public void setAdapterData(List<PhotoEntity> photoEntityList) {
         gameAdapter.setDataCardImages(photoEntityList);
         hideLoadingView();
@@ -209,8 +182,15 @@ public class GameFragment extends Fragment implements GameContract.View, GameAda
 
     @Override
     public void showErrorView() {
-        alertDialogBuilder = new AlertDialog.Builder(getActivity());
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
         alertDialogBuilder.setTitle("There was an unexpected error").setMessage("Please try again").show();
+    }
+
+    @Override
+    public void checkGameFinished() {
+        if (gameAdapter.getItemCount() == 0) {
+            showScoreFragmentDialog(gamePresenter.getScore());
+        }
     }
 
     @Override
@@ -219,8 +199,14 @@ public class GameFragment extends Fragment implements GameContract.View, GameAda
     }
 
     @Override
+    public void onScoreChanged(int gameScore) {
+        floatingTextView.setText(Integer.toString(gameScore));
+    }
+
+    @Override
     public void onEnterKeyPressed(PlayerScore playerScore) {
         gamePresenter.onScoredEntered(playerScore);
+        // TODO Start a new game from scratch
         getActivity().finish();
     }
 

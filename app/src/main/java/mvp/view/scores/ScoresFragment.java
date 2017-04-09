@@ -1,12 +1,11 @@
 package mvp.view.scores;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,12 +16,10 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import manulorenzo.me.kittentrate.R;
+import mvp.model.di.Injection;
 import mvp.model.entity.PhotoEntity;
 import mvp.model.repository.GameRepository;
-import mvp.model.repository.ScoresLoader;
-import mvp.model.repository.local.GameLocalDataSource;
 import mvp.model.repository.model.PlayerScore;
-import mvp.model.repository.remote.GameRemoteDataSource;
 import mvp.model.rest.NetworkCallback;
 
 /**
@@ -34,9 +31,6 @@ public class ScoresFragment extends Fragment implements ScoresContract.View, Net
     @BindView(R.id.empty_textview)
     TextView emptyTextView;
     private ScoresAdapter scoresAdapter;
-    @BindView(R.id.toolbar)
-    Toolbar toolbar;
-    private ScoresPresenter scoresPresenter;
 
     public ScoresFragment() {
     }
@@ -53,7 +47,6 @@ public class ScoresFragment extends Fragment implements ScoresContract.View, Net
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.scores_fragment, container, false);
         ButterKnife.bind(this, view);
-        ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
         return view;
     }
 
@@ -70,13 +63,12 @@ public class ScoresFragment extends Fragment implements ScoresContract.View, Net
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        GameLocalDataSource gameLocalDataSource = new GameLocalDataSource(getContext().getApplicationContext());
-        GameRemoteDataSource gameRemoteDataSource = new GameRemoteDataSource();
+        Context applicationContext = getContext().getApplicationContext();
 
-        GameRepository gameRepository = new GameRepository(gameLocalDataSource, gameRemoteDataSource);
+        GameRepository gameRepository = Injection.provideRepository(applicationContext);
 
-        ScoresLoader scoresLoader = new ScoresLoader(getContext().getApplicationContext(), gameRepository);
-        scoresPresenter = new ScoresPresenter(this, scoresLoader, getLoaderManager());
+        ScoresLoader scoresLoader = new ScoresLoader(applicationContext, gameRepository);
+        ScoresPresenter scoresPresenter = new ScoresPresenter(this, scoresLoader, getLoaderManager());
         scoresPresenter.start();
     }
 

@@ -2,9 +2,6 @@ package mvp.model.repository.remote;
 
 import java.util.List;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
-
 import mvp.model.entity.FlickrPhoto;
 import mvp.model.mapping.PhotoEntityMapper;
 import mvp.model.mapping.PhotoEntityMapperInterface;
@@ -19,10 +16,10 @@ import retrofit2.Response;
 /**
  * Created by Manuel Lorenzo on 18/03/2017.
  */
-@Singleton
 public class GameRemoteDataSource implements GameDataSource {
-    @Inject
-    public GameRemoteDataSource() {
+    private static GameRemoteDataSource gameRemoteDataSource;
+
+    private GameRemoteDataSource() {
     }
 
     @Override
@@ -50,5 +47,12 @@ public class GameRemoteDataSource implements GameDataSource {
     @Override
     public void addTopScore(PlayerScore playerScore) {
         throw new UnsupportedOperationException("Operation not supported");
+    }
+
+    public static GameRemoteDataSource getInstance() {
+        if (gameRemoteDataSource == null) {
+            gameRemoteDataSource = new GameRemoteDataSource();
+        }
+        return gameRemoteDataSource;
     }
 }

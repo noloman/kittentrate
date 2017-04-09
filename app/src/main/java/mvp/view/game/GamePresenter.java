@@ -4,8 +4,6 @@ import android.widget.ViewFlipper;
 
 import java.util.List;
 
-import javax.inject.Inject;
-
 import mvp.model.domain.GameDomainContract;
 import mvp.model.domain.GameManager;
 import mvp.model.entity.Card;
@@ -24,23 +22,16 @@ public class GamePresenter implements GameContract.Presenter, NetworkCallback {
     private int score;
     private GameDomainContract.Manager manager;
 
-    @Inject
-    GamePresenter(GameRepository gameRepository,GameContract.View view) {
+    GamePresenter(GameRepository gameRepository, GameContract.View view) {
         this.view = view;
         this.manager = new GameManager(this);
         this.gameRepository = gameRepository;
-
     }
 
     @Override
     public void start() {
         view.showLoadingView();
         gameRepository.getPhotos(this);
-    }
-
-    @Inject
-    void setupListeners() {
-        view.setPresenter(this);
     }
 
     @Override
@@ -74,17 +65,6 @@ public class GamePresenter implements GameContract.Presenter, NetworkCallback {
     }
 
     @Override
-    public void onGameScoreIncreased(int gameScore) {
-        score = gameScore;
-        view.onScoreIncreased(gameScore);
-    }
-
-    @Override
-    public void onGameFinished() {
-        view.onGameFinished();
-    }
-
-    @Override
     public void onTurnCardsOver() {
         view.turnCardsOver();
     }
@@ -97,6 +77,13 @@ public class GamePresenter implements GameContract.Presenter, NetworkCallback {
     @Override
     public void removeViewFlipper() {
         view.removeViewFlipper();
+    }
+
+    @Override
+    public void onGameScoreChanged(int gameScore) {
+        score = gameScore;
+        view.onScoreChanged(gameScore);
+        view.checkGameFinished();
     }
 
     @Override
