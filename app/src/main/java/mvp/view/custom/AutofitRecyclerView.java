@@ -26,15 +26,13 @@ public class AutofitRecyclerView extends RecyclerView {
 
     private void init(Context context, AttributeSet attrs) {
         if (attrs != null) {
-            int[] attrsArray = {
-                    android.R.attr.columnWidth
-            };
+            int[] attrsArray = {android.R.attr.columnWidth};
             TypedArray array = context.obtainStyledAttributes(attrs, attrsArray);
             columnWidth = array.getDimensionPixelSize(0, -1);
             array.recycle();
         }
 
-        manager = new AutofitGridLayoutManager(getContext(), 1);
+        manager = new AutofitGridLayoutManager(getContext().getApplicationContext(), 1);
         setLayoutManager(manager);
     }
 

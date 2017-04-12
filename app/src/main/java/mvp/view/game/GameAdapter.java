@@ -16,34 +16,35 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import manulorenzo.me.kittentrate.R;
 import mvp.model.entity.Card;
 import mvp.model.entity.PhotoEntity;
-import manulorenzo.me.kittentrate.R;
-import mvp.model.utils.Constants;
 
 /**
  * Created by Manuel Lorenzo on 13/03/2017.
  */
 
 public class GameAdapter extends RecyclerView.Adapter<GameAdapter.CardViewHolder> {
-    private List<Card> cardList;
+    private final Context context;
+    private final List<Card> cardList;
     private OnItemClickListener onItemClickListener;
-    private Context context;
+
+    public interface OnItemClickListener {
+        void onItemClick(int position, Card item, ViewFlipper viewFlipper);
+    }
 
     GameAdapter(OnItemClickListener onItemClickListener, Context context) {
-        this.context = context;
         this.onItemClickListener = onItemClickListener;
         this.context = context.getApplicationContext();
         cardList = new ArrayList<>();
-        for (int i = 0; i < 8 * Constants.NUMBER_MATCHING_CARDS; i++) {
-            cardList.add(new Card());
-        }
     }
 
     void setDataCardImages(List<PhotoEntity> entityList) {
         for (int i = 0; i < entityList.size(); i++) {
-            cardList.get(i).setImageCoverUrl(entityList.get(i).getUrl());
-            cardList.get(i).setId(entityList.get(i).getId());
+            Card card = new Card();
+            card.setImageCoverUrl(entityList.get(i).getUrl());
+            card.setId(entityList.get(i).getId());
+            cardList.add(card);
         }
         notifyDataSetChanged();
     }
@@ -54,14 +55,10 @@ public class GameAdapter extends RecyclerView.Adapter<GameAdapter.CardViewHolder
             if (cardId.equals(id)) {
                 cardList.remove(position);
                 notifyItemRemoved(position);
-                notifyItemRangeChanged(position, cardList.size());
+                //notifyItemRangeChanged(position, cardList.size());
                 break;
             }
         }
-    }
-
-    public interface OnItemClickListener {
-        void onItemClick(int position, Card item, ViewFlipper viewFlipper);
     }
 
     @Override
@@ -85,7 +82,6 @@ public class GameAdapter extends RecyclerView.Adapter<GameAdapter.CardViewHolder
     public int getItemCount() {
         return cardList.size();
     }
-
 
     static class CardViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.viewFlipper)

@@ -26,6 +26,8 @@ import mvp.model.repository.GameRepository;
 import mvp.model.repository.model.PlayerScore;
 import mvp.model.utils.Constants;
 import mvp.view.custom.AutofitRecyclerView;
+import mvp.view.main.MainActivity;
+import mvp.view.navigation.Screen;
 
 public class GameFragment extends Fragment implements GameContract.View, GameAdapter.OnItemClickListener, NameScoreDialogFragment.NameScoreKeyListener {
     public static final String SCORE_BUNDLE_KEY = "score";
@@ -76,16 +78,12 @@ public class GameFragment extends Fragment implements GameContract.View, GameAda
     }
 
     @Override
-    public void setPresenter(GamePresenter presenter) {
-        gamePresenter = presenter;
-    }
-
-    @Override
     public void onDestroyView() {
         if (loadingDialog != null && loadingDialog.isShowing()) {
             loadingDialog.dismiss();
             loadingDialog = null;
         }
+        autofitRecyclerView.setAdapter(null);
         super.onDestroyView();
     }
 
@@ -206,8 +204,7 @@ public class GameFragment extends Fragment implements GameContract.View, GameAda
     @Override
     public void onEnterKeyPressed(PlayerScore playerScore) {
         gamePresenter.onScoredEntered(playerScore);
-        // TODO Start a new game from scratch
-        getActivity().finish();
+        ((MainActivity) getActivity()).navigateTo(Screen.SCORES);
     }
 
     private void showScoreFragmentDialog(int score) {

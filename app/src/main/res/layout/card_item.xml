@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="@dimen/card_size"
     android:layout_height="@dimen/card_size"
-    android:layout_margin="@dimen/grid_layout_margin"
+    android:layout_margin="@dimen/item_margin"
     app:cardCornerRadius="4dp">
 
     <ViewFlipper
@@ -18,7 +18,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scaleType="centerCrop"
-            app:srcCompat="@drawable/ic_whatshot_black_24dp" />
+            app:srcCompat="@drawable/ic_kitten_icon" />
 
         <ImageView
             android:id="@+id/cardFront"

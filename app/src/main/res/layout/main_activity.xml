@@ -8,7 +8,7 @@
     android:fitsSystemWindows="true"
     tools:openDrawer="left">
 
-    <!-- This LinearLayout represents the contents of the screen  -->
+    <!-- This LinearLayout represents the contents of Screenreen  -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"

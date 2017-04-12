@@ -55,7 +55,7 @@ public class GameManagerTest {
         gameManager.cardFlipped(1, card1);
         verify(gamePresenter, times(2)).removeViewFlipper();
         verify(gamePresenter, times(2)).notifyAdapterItemRemoved(anyString());
-        verify(gamePresenter).onGameScoreIncreased(anyInt());
+        verify(gamePresenter).onGameScoreChanged(anyInt());
     }
 
     @Test

@@ -2,7 +2,6 @@ package mvp.view.main;
 
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.os.StrictMode;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
@@ -18,13 +17,15 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import manulorenzo.me.kittentrate.R;
 import mvp.view.game.GameFragment;
+import mvp.view.navigation.Navigator;
+import mvp.view.navigation.Screen;
 import mvp.view.scores.ScoresFragment;
 
 /**
  * Created by Manuel Lorenzo
  */
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements Navigator {
     @BindView(R.id.drawer_layout)
     DrawerLayout drawerLayout;
     @BindView(R.id.toolbar)
@@ -54,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void loadFragment(Fragment fragment) {
+    public void loadFragment(Fragment fragment) {
         // Insert the fragment by replacing any existing fragment
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.fragment_content, fragment).commit();
@@ -140,18 +141,13 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void setStrictMode() {
-        StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder()
-                .detectDiskReads()
-                .detectDiskWrites()
-                .detectAll()
-                .penaltyLog()
-                .build());
-        StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder()
-                .detectLeakedSqlLiteObjects()
-                .detectLeakedClosableObjects()
-                .penaltyLog()
-                .penaltyDeath()
-                .build());
+    @Override
+    public void navigateTo(Screen screen) {
+        switch (screen) {
+            case GAME:
+                loadFragment(GameFragment.newInstance());
+            case SCORES:
+                loadFragment(ScoresFragment.newInstance());
+        }
     }
 }

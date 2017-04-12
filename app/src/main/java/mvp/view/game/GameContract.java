@@ -7,14 +7,13 @@ import java.util.List;
 import mvp.model.entity.Card;
 import mvp.model.entity.PhotoEntity;
 import mvp.model.repository.model.PlayerScore;
-import mvp.view.BaseView;
 
 /**
  * Created by Manuel Lorenzo on 21/03/2017.
  */
 
 public interface GameContract {
-    interface View extends BaseView<GamePresenter> {
+    interface View {
         void showLoadingView();
 
         void hideLoadingView();

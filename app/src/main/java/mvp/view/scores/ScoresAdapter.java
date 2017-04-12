@@ -62,7 +62,7 @@ class ScoresAdapter extends RecyclerView.Adapter<ScoresAdapter.ScoresViewHolder>
 
         void bind(PlayerScore playerScore) {
             nameTextView.setText(playerScore.getPlayerName());
-            scoreTextView.setText(playerScore.getPlayerScore());
+            scoreTextView.setText(String.valueOf(playerScore.getPlayerScore()));
         }
     }
 }
