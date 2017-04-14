@@ -31,15 +31,14 @@ import mvp.view.navigation.Screen;
 
 public class GameFragment extends Fragment implements GameContract.View, GameAdapter.OnItemClickListener, NameScoreDialogFragment.NameScoreKeyListener {
     public static final String SCORE_BUNDLE_KEY = "score";
-    private GameAdapter gameAdapter;
-    private Map<ViewFlipper, Card> viewFlipperCardWeakHashMap = new WeakHashMap<>(Constants.NUMBER_MATCHING_CARDS);
-    private ProgressDialog loadingDialog;
-    private GamePresenter gamePresenter;
-
     @BindView(R.id.floating_textview)
     TextView floatingTextView;
     @BindView(R.id.recycler_view)
     AutofitRecyclerView autofitRecyclerView;
+    private GameAdapter gameAdapter;
+    private Map<ViewFlipper, Card> viewFlipperCardWeakHashMap = new WeakHashMap<>(Constants.NUMBER_MATCHING_CARDS);
+    private ProgressDialog loadingDialog;
+    private GamePresenter gamePresenter;
 
     public GameFragment() {
         // Required empty public constructor
@@ -110,7 +109,7 @@ public class GameFragment extends Fragment implements GameContract.View, GameAda
 
     @Override
     public void onItemClick(final int position, Card card, final ViewFlipper viewFlipper) {
-        if (!viewFlipperCardWeakHashMap.containsKey(viewFlipper)) {
+        if (shouldDispatchTouchEvent() && !viewFlipperCardWeakHashMap.containsKey(viewFlipper)) {
             viewFlipper.showNext();
             viewFlipperCardWeakHashMap.put(viewFlipper, card);
             gamePresenter.onItemClicked(position, card, viewFlipper);

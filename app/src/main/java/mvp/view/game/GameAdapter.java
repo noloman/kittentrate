@@ -29,10 +29,6 @@ public class GameAdapter extends RecyclerView.Adapter<GameAdapter.CardViewHolder
     private final List<Card> cardList;
     private OnItemClickListener onItemClickListener;
 
-    public interface OnItemClickListener {
-        void onItemClick(int position, Card item, ViewFlipper viewFlipper);
-    }
-
     GameAdapter(OnItemClickListener onItemClickListener, Context context) {
         this.onItemClickListener = onItemClickListener;
         this.context = context.getApplicationContext();
@@ -55,7 +51,6 @@ public class GameAdapter extends RecyclerView.Adapter<GameAdapter.CardViewHolder
             if (cardId.equals(id)) {
                 cardList.remove(position);
                 notifyItemRemoved(position);
-                //notifyItemRangeChanged(position, cardList.size());
                 break;
             }
         }
@@ -81,6 +76,10 @@ public class GameAdapter extends RecyclerView.Adapter<GameAdapter.CardViewHolder
     @Override
     public int getItemCount() {
         return cardList.size();
+    }
+
+    public interface OnItemClickListener {
+        void onItemClick(int position, Card item, ViewFlipper viewFlipper);
     }
 
     static class CardViewHolder extends RecyclerView.ViewHolder {
