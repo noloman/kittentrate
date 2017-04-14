@@ -6,7 +6,7 @@ android {
     defaultConfig {
         applicationId "manulorenzo.me.kittentrate"
         minSdkVersion 15
-        targetSdkVersion 25
+        targetSdkVersion 26
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -75,7 +75,6 @@ dependencies {
     testCompile "com.squareup.leakcanary:leakcanary-android:$leakCanaryVersion"
 
     testCompile "org.mockito:mockito-core:$mockitoVersion"
-    releaseCompile "com.google.firebase:firebase-crash:$firebaseVersion"
 }
 
 configurations.all {

@@ -2,6 +2,7 @@ package mvp.view.main;
 
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
@@ -15,6 +16,7 @@ import android.view.MenuItem;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import manulorenzo.me.kittentrate.BuildConfig;
 import manulorenzo.me.kittentrate.R;
 import mvp.view.game.GameFragment;
 import mvp.view.navigation.Navigator;
@@ -37,7 +39,7 @@ public class MainActivity extends AppCompatActivity implements Navigator {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // setStrictMode();
+        setStrictMode();
         setContentView(R.layout.main_activity);
         ButterKnife.bind(this);
         // Set a Toolbar to replace the ActionBar.
@@ -146,8 +148,26 @@ public class MainActivity extends AppCompatActivity implements Navigator {
         switch (screen) {
             case GAME:
                 loadFragment(GameFragment.newInstance());
+                break;
             case SCORES:
                 loadFragment(ScoresFragment.newInstance());
+                break;
+            default:
+                break;
+        }
+    }
+
+    private void setStrictMode() {
+        if (BuildConfig.DEBUG) {
+            StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder()
+                    .detectAll()
+                    .penaltyLog()
+                    .build());
+            StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder()
+                    .detectAll()
+                    .penaltyLog()
+                    .penaltyDeath()
+                    .build());
         }
     }
 }
