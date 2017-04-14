@@ -5,6 +5,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AlphaAnimation;
 import android.widget.TextView;
 
 import java.util.List;
@@ -63,6 +64,13 @@ class ScoresAdapter extends RecyclerView.Adapter<ScoresAdapter.ScoresViewHolder>
         void bind(PlayerScore playerScore) {
             nameTextView.setText(playerScore.getPlayerName());
             scoreTextView.setText(String.valueOf(playerScore.getPlayerScore()));
+            setFadeAnimation(itemView);
+        }
+
+        private void setFadeAnimation(View view) {
+            AlphaAnimation anim = new AlphaAnimation(0.0f, 1.0f);
+            anim.setDuration(500);
+            view.startAnimation(anim);
         }
     }
 }
