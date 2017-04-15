@@ -101,12 +101,7 @@ public class GameAdapter extends RecyclerView.Adapter<GameAdapter.CardViewHolder
                     .asBitmap()
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .into(cardFront);
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    listener.onItemClick(position, item, viewFlipper);
-                }
-            });
+            itemView.setOnClickListener(v -> listener.onItemClick(position, item, viewFlipper));
         }
     }
 }

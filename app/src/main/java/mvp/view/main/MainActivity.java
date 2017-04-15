@@ -16,6 +16,8 @@ import android.view.MenuItem;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import com.crashlytics.android.Crashlytics;
+import io.fabric.sdk.android.Fabric;
 import manulorenzo.me.kittentrate.BuildConfig;
 import manulorenzo.me.kittentrate.R;
 import mvp.view.game.GameFragment;
@@ -39,6 +41,7 @@ public class MainActivity extends AppCompatActivity implements Navigator {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Fabric.with(this, new Crashlytics());
         setStrictMode();
         setContentView(R.layout.main_activity);
         ButterKnife.bind(this);
@@ -94,12 +97,9 @@ public class MainActivity extends AppCompatActivity implements Navigator {
 
     private void setupDrawerContent(NavigationView navigationView) {
         navigationView.setNavigationItemSelectedListener(
-                new NavigationView.OnNavigationItemSelectedListener() {
-                    @Override
-                    public boolean onNavigationItemSelected(MenuItem menuItem) {
-                        selectDrawerItem(menuItem);
-                        return true;
-                    }
+                menuItem -> {
+                    selectDrawerItem(menuItem);
+                    return true;
                 });
     }
 

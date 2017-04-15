@@ -145,12 +145,7 @@ public class GameFragment extends Fragment implements GameContract.View, GameAda
 
     @Override
     public void turnCardsOver() {
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                gamePresenter.removeCardsFromMaps();
-            }
-        }, Constants.ROTATION_TIME);
+        new Handler().postDelayed(() -> gamePresenter.removeCardsFromMaps(), Constants.ROTATION_TIME);
     }
 
     @Override
