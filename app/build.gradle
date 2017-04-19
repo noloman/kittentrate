@@ -54,9 +54,10 @@ android {
     productFlavors {
         mock {
             applicationIdSuffix ".mock"
+            ext.enableCrashlytics = false
         }
         prod {
-
+            manifestPlaceholders = [fabricApiKey: "io.fabric.ApiKey", fabricApiKeyValue: keystoreProperties['fabricApiKeyValue']]
         }
     }
 
