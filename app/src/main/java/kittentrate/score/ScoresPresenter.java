@@ -29,7 +29,6 @@ public class ScoresPresenter implements ScoresContract.Presenter, LoaderManager.
 
     @Override
     public Loader<List<PlayerScore>> onCreateLoader(int id, Bundle args) {
-        view.showLoadingView();
         return scoresLoader;
     }
 

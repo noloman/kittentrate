@@ -72,16 +72,6 @@ public class ScoresFragment extends Fragment implements ScoresContract.View, Net
     }
 
     @Override
-    public void showLoadingView() {
-        // TODO
-    }
-
-    @Override
-    public void hideLoadingView() {
-        // TODO
-    }
-
-    @Override
     public void showScores(List<PlayerScore> data) {
         emptyTextView.setVisibility(View.GONE);
         recyclerView.setVisibility(View.VISIBLE);
