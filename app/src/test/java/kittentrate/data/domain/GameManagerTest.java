@@ -6,7 +6,6 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import kittentrate.game.Card;
-import kittentrate.game.Game;
 import kittentrate.game.GameManager;
 import kittentrate.game.GamePresenter;
 
@@ -21,14 +20,11 @@ import static org.mockito.Mockito.when;
  */
 public class GameManagerTest {
     @Mock
-    private
-    GamePresenter gamePresenter;
+    private GamePresenter gamePresenter;
     @Mock
     private Card card1;
     @Mock
     private Card card2;
-    @Mock
-    private Game game;
 
     private GameManager gameManager;
 
@@ -39,7 +35,7 @@ public class GameManagerTest {
     }
 
     @Test
-    public void cardFlipped_whenTwoCardsWithDifferentId_shouldTurnCardsOver() throws Exception {
+    public void testGameManager_gamePresenterShouldTurnCardsOver_whenCardsAreFlipped() throws Exception {
         when(card1.getId()).thenReturn("1");
         when(card2.getId()).thenReturn("2");
         gameManager.cardFlipped(0, card1);
@@ -49,7 +45,7 @@ public class GameManagerTest {
     }
 
     @Test
-    public void cardFlipped_whenTwoCardsWithSameId_shouldRemoveThemFromAdapter_andIncreaseScore() throws Exception {
+    public void testGameManager_gamePresenterShouldRemoveViewFlipperAndChangeScore_whenCardsAreMatched() throws Exception {
         when(card1.getId()).thenReturn("1");
 
         gameManager.cardFlipped(0, card1);
@@ -60,7 +56,7 @@ public class GameManagerTest {
     }
 
     @Test
-    public void removeCardsFromMap() throws Exception {
+    public void testGameManager_gamePresenterShouldNotifyItemsChanged_whenGameManagerFlipsCard() throws Exception {
         when(card1.getId()).thenReturn("1");
         gameManager.cardFlipped(0, card1);
         gameManager.removeCardsFromMap();

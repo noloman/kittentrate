@@ -11,11 +11,12 @@ import java.util.List;
  */
 
 public class ScoresPresenter implements ScoresContract.Presenter, LoaderManager.LoaderCallbacks<List<PlayerScore>> {
+    public static final int LOADER_ID = 0;
     private final ScoresLoader scoresLoader;
     private final LoaderManager loaderManager;
     private final ScoresContract.View view;
 
-    ScoresPresenter(ScoresContract.View view, ScoresLoader scoresLoader, LoaderManager loaderManager) {
+    public ScoresPresenter(ScoresContract.View view, ScoresLoader scoresLoader, LoaderManager loaderManager) {
         this.scoresLoader = scoresLoader;
         this.loaderManager = loaderManager;
         this.view = view;
@@ -23,7 +24,7 @@ public class ScoresPresenter implements ScoresContract.Presenter, LoaderManager.
 
     @Override
     public void start() {
-        loaderManager.initLoader(0, null, this);
+        loaderManager.initLoader(LOADER_ID, null, this);
     }
 
     @Override

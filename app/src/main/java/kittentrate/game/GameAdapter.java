@@ -16,8 +16,8 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import manulorenzo.me.kittentrate.R;
 import kittentrate.data.repository.model.PhotoEntity;
+import manulorenzo.me.kittentrate.R;
 
 import static android.support.v7.widget.RecyclerView.NO_POSITION;
 
