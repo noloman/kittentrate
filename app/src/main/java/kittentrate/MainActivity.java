@@ -57,19 +57,18 @@ public class MainActivity extends AppCompatActivity implements Navigator {
         setupDrawerContent(navigationView);
         Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragment_content);
         if (fragment == null) {
-            loadFragment(GameFragment.newInstance());
+            loadFragment(GameFragment.newInstance(), navigationView.getMenu().getItem(0));
         }
     }
 
-    public void loadFragment(Fragment fragment) {
+    public void loadFragment(Fragment fragment, MenuItem menuItem) {
         // Insert the fragment by replacing any existing fragment
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.fragment_content, fragment).commit();
         // Highlight the selected item has been done by NavigationView
-        MenuItem gameMenuItem = navigationView.getMenu().getItem(0);
-        gameMenuItem.setChecked(true);
+        menuItem.setChecked(true);
         // Set action bar title
-        setTitle(gameMenuItem.getTitle());
+        setTitle(menuItem.getTitle());
     }
 
     // `onPostCreate` called when activity start-up is complete after `onStart()`
@@ -124,7 +123,7 @@ public class MainActivity extends AppCompatActivity implements Navigator {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        loadFragment(fragment);
+        loadFragment(fragment, menuItem);
 
         // Close the navigation drawer
         drawerLayout.closeDrawers();
@@ -148,10 +147,10 @@ public class MainActivity extends AppCompatActivity implements Navigator {
     public void navigateTo(Screen screen) {
         switch (screen) {
             case GAME:
-                loadFragment(GameFragment.newInstance());
+                loadFragment(GameFragment.newInstance(), navigationView.getMenu().getItem(0));
                 break;
             case SCORES:
-                loadFragment(ScoresFragment.newInstance());
+                loadFragment(ScoresFragment.newInstance(), navigationView.getMenu().getItem(0));
                 break;
             default:
                 break;
