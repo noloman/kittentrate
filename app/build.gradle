@@ -40,6 +40,7 @@ android {
     def keystorePropertiesFile = rootProject.file("keystore.properties")
     def keystoreProperties = new Properties()
     keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+    def fabricApiKey = keystoreProperties["fabricApiKeyValue"]
 
     buildTypes {
         debug {
@@ -54,10 +55,10 @@ android {
     productFlavors {
         mock {
             applicationIdSuffix ".mock"
-            ext.enableCrashlytics = false
+            manifestPlaceholders = [fabricApiKeyValue: fabricApiKey]
         }
         prod {
-            manifestPlaceholders = [fabricApiKey: "io.fabric.ApiKey", fabricApiKeyValue: keystoreProperties['fabricApiKeyValue']]
+            manifestPlaceholders = [fabricApiKeyValue: fabricApiKey]
         }
     }
 
@@ -99,7 +100,7 @@ dependencies {
     debugCompile "com.squareup.leakcanary:leakcanary-android:$leakCanaryVersion"
     releaseCompile "com.squareup.leakcanary:leakcanary-android:$leakCanaryVersion"
     testCompile "com.squareup.leakcanary:leakcanary-android:$leakCanaryVersion"
-    compile('com.crashlytics.sdk.android:crashlytics:2.6.7@aar') {
+    compile("com.crashlytics.sdk.android:crashlytics:$crashlyticsVersion@aar") {
         transitive = true
     }
 
