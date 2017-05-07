@@ -9,17 +9,17 @@ import android.database.sqlite.SQLiteOpenHelper;
  */
 
 public class GameDbHelper extends SQLiteOpenHelper {
-    private static final String DATABASE_NAME = "Kittentrate.db";
+    private static final String DATABASE_NAME = "kittentrate.db";
     private static final int DATABASE_VERSION = 1;
-    private static final String TEXT_TYPE = " TEXT";
+    private static final String TEXT_TYPE = " TEXT ";
     private static final String INTEGER_TYPE = " INTEGER ";
     private static final String COMMA = ", ";
 
     private static final String SQL_CREATE_DB = "CREATE TABLE if not exists "
             + GameScoreDbContract.ScoreEntry.TABLE_NAME + " (" +
-            GameScoreDbContract.ScoreEntry._ID + " INTEGER PRIMARY KEY" + COMMA +
+            GameScoreDbContract.ScoreEntry._ID + TEXT_TYPE + " PRIMARY KEY" + COMMA +
             GameScoreDbContract.ScoreEntry.COLUMN_NAME_PLAYER_NAME + TEXT_TYPE + COMMA +
-            GameScoreDbContract.ScoreEntry.COLUMN_NAME_SCORE + INTEGER_TYPE + ")";
+            GameScoreDbContract.ScoreEntry.COLUMN_NAME_SCORE + " REAL " + ")";
 
     GameDbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -32,6 +32,6 @@ public class GameDbHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-
+        db.execSQL("DROP TABLE IF EXISTS " + GameScoreDbContract.ScoreEntry.TABLE_NAME);
     }
 }

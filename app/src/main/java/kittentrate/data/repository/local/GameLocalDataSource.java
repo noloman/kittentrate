@@ -4,9 +4,13 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
+
+import com.crashlytics.android.Crashlytics;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import kittentrate.data.repository.GameDataSource;
 import kittentrate.score.PlayerScore;
@@ -66,10 +70,17 @@ public class GameLocalDataSource implements GameDataSource {
     }
 
     @Override
-    public void addTopScore(PlayerScore playerScore) {
+    public long addTopScore(PlayerScore playerScore) {
+        long rowId = -1;
         ContentValues contentValues = new ContentValues();
+        contentValues.put(GameScoreDbContract.ScoreEntry._ID, UUID.randomUUID().toString());
         contentValues.put(GameScoreDbContract.ScoreEntry.COLUMN_NAME_PLAYER_NAME, playerScore.getPlayerName());
         contentValues.put(GameScoreDbContract.ScoreEntry.COLUMN_NAME_SCORE, playerScore.getPlayerScore());
-        sqLiteDatabase.insert(GameScoreDbContract.ScoreEntry.TABLE_NAME, null, contentValues);
+        try {
+            rowId = sqLiteDatabase.insertOrThrow(GameScoreDbContract.ScoreEntry.TABLE_NAME, null, contentValues);
+        } catch (SQLiteException e) {
+            Crashlytics.logException(e);
+        }
+        return rowId;
     }
 }

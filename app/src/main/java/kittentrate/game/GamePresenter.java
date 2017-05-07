@@ -33,7 +33,9 @@ public class GamePresenter implements GameContract.Presenter, NetworkCallback {
 
     @Override
     public void onScoredEntered(PlayerScore playerScore) {
-        gameRepository.addTopScore(playerScore);
+        if (gameRepository.addTopScore(playerScore) == -1) {
+            view.showErrorView();
+        }
     }
 
     boolean shouldDispatchTouchEvent() {

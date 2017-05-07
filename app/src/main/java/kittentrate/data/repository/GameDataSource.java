@@ -14,5 +14,5 @@ public interface GameDataSource {
 
     List<PlayerScore> getTopScores();
 
-    void addTopScore(PlayerScore playerScore);
+    long addTopScore(PlayerScore playerScore);
 }

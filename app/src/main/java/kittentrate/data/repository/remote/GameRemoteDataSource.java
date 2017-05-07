@@ -45,7 +45,7 @@ public class GameRemoteDataSource implements GameDataSource {
     }
 
     @Override
-    public void addTopScore(PlayerScore playerScore) {
+    public long addTopScore(PlayerScore playerScore) {
         throw new UnsupportedOperationException("Operation not supported");
     }
 
