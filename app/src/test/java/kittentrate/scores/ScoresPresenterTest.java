@@ -32,9 +32,6 @@ public class ScoresPresenterTest {
     private ScoresContract.View view;
 
     private ScoresPresenter scoresPresenter;
-    @Captor
-    private
-    ArgumentCaptor<LoaderManager.LoaderCallbacks<List<PlayerScore>>> listLoaderCallbacks;
 
     @Before
     public void setUp() throws Exception {

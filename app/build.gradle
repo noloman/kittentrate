@@ -32,16 +32,13 @@ android {
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
     }
-
     lintOptions {
         abortOnError false
     }
-
     def keystorePropertiesFile = rootProject.file("keystore.properties")
     def keystoreProperties = new Properties()
     keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
     def fabricApiKey = keystoreProperties["fabricApiKeyValue"]
-
     buildTypes {
         debug {
             minifyEnabled false
@@ -49,9 +46,9 @@ android {
         release {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.kittentrate
         }
     }
-
     productFlavors {
         mock {
             applicationIdSuffix ".mock"
@@ -61,14 +58,10 @@ android {
             manifestPlaceholders = [fabricApiKeyValue: fabricApiKey]
         }
     }
-
     buildTypes.each {
         it.buildConfigField 'String', 'FLICKR_API_KEY', keystoreProperties['FlickrApiKey']
     }
-
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
     }
 }
 
@@ -85,12 +78,10 @@ dependencies {
     compile "com.android.support:support-v4:$androidSupportLibraryVersion"
     compile "com.android.support:design:$androidSupportLibraryVersion"
     compile "com.android.support:recyclerview-v7:$androidSupportLibraryVersion"
-
     compile "com.github.bumptech.glide:glide:$glideVersion"
+
     compile "com.jakewharton:butterknife:$butterknifeVersion"
     annotationProcessor "com.jakewharton:butterknife-compiler:$butterknifeVersion"
-
-    testCompile "junit:junit:$jUnitVersion"
 
     compile "com.google.code.gson:gson:$gsonVersion"
     compile "com.squareup.retrofit2:retrofit:$retrofitVersion"
@@ -98,12 +89,14 @@ dependencies {
     compile "com.squareup.okhttp3:logging-interceptor:$squareLoggingInterceptorVersion"
 
     debugCompile "com.squareup.leakcanary:leakcanary-android:$leakCanaryVersion"
-    releaseCompile "com.squareup.leakcanary:leakcanary-android:$leakCanaryVersion"
     testCompile "com.squareup.leakcanary:leakcanary-android:$leakCanaryVersion"
+    releaseCompile "com.squareup.leakcanary:leakcanary-android-no-op:$leakCanaryVersion"
+
     compile("com.crashlytics.sdk.android:crashlytics:$crashlyticsVersion@aar") {
         transitive = true
     }
-
+    
+    testCompile "junit:junit:$jUnitVersion"
     testCompile "org.mockito:mockito-core:$mockitoVersion"
 }
 

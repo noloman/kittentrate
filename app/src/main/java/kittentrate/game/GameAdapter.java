@@ -67,11 +67,14 @@ public class GameAdapter extends RecyclerView.Adapter<GameAdapter.CardViewHolder
 
         // Return a new holder instance
         final CardViewHolder cardViewHolder = new CardViewHolder(cardView);
-        cardView.setOnClickListener(v -> {
-            int pos = cardViewHolder.getAdapterPosition();
-            if (pos != NO_POSITION) {
-                Card card = cardList.get(pos);
-                onItemClickListener.onItemClick(pos, card, cardViewHolder.viewFlipper);
+        cardView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int pos = cardViewHolder.getAdapterPosition();
+                if (pos != NO_POSITION) {
+                    Card card = cardList.get(pos);
+                    onItemClickListener.onItemClick(pos, card, cardViewHolder.viewFlipper);
+                }
             }
         });
         return cardViewHolder;
