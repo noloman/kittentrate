@@ -20,14 +20,26 @@ repositories {
     maven { url 'https://maven.fabric.io/public' }
 }
 
+def keystorePropertiesFile = rootProject.file("keystore.properties")
+def keystoreProperties = new Properties()
+keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+
 android {
+    signingConfigs {
+        kittentrate {
+            keyAlias keystoreProperties['keyAlias']
+            keyPassword keystoreProperties['keyPassword']
+            storeFile file(keystoreProperties['storeFile'])
+            storePassword keystoreProperties['storePassword']
+        }
+    }
     compileSdkVersion 25
     buildToolsVersion "25.0.2"
     defaultConfig {
         applicationId "manulorenzo.me.kittentrate"
         minSdkVersion 15
         targetSdkVersion 25
-        versionCode 1
+        versionCode 2
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
@@ -35,10 +47,7 @@ android {
     lintOptions {
         abortOnError false
     }
-    def keystorePropertiesFile = rootProject.file("keystore.properties")
-    def keystoreProperties = new Properties()
-    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
-    def fabricApiKey = keystoreProperties["fabricApiKeyValue"]
+
     buildTypes {
         debug {
             minifyEnabled false
@@ -52,10 +61,10 @@ android {
     productFlavors {
         mock {
             applicationIdSuffix ".mock"
-            manifestPlaceholders = [fabricApiKeyValue: fabricApiKey]
+            manifestPlaceholders = [fabricApiKeyValue: keystoreProperties["fabricApiKeyValue"]]
         }
         prod {
-            manifestPlaceholders = [fabricApiKeyValue: fabricApiKey]
+            manifestPlaceholders = [fabricApiKeyValue: keystoreProperties["fabricApiKeyValue"]]
         }
     }
     buildTypes.each {
@@ -95,7 +104,7 @@ dependencies {
     compile("com.crashlytics.sdk.android:crashlytics:$crashlyticsVersion@aar") {
         transitive = true
     }
-    
+
     testCompile "junit:junit:$jUnitVersion"
     testCompile "org.mockito:mockito-core:$mockitoVersion"
 }
