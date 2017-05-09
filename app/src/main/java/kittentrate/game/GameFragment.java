@@ -8,6 +8,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -21,10 +22,10 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import kittentrate.MainActivity;
 import kittentrate.data.di.Injection;
-import kittentrate.data.repository.model.PhotoEntity;
 import kittentrate.data.repository.GameRepository;
-import kittentrate.score.PlayerScore;
+import kittentrate.data.repository.model.PhotoEntity;
 import kittentrate.navigation.Screen;
+import kittentrate.score.PlayerScore;
 import kittentrate.utils.Constants;
 import kittentrate.view.custom.AutofitRecyclerView;
 import manulorenzo.me.kittentrate.R;
@@ -67,6 +68,7 @@ public class GameFragment extends Fragment implements GameContract.View, GameAda
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
+        setHasOptionsMenu(true);
 
         GameRepository gameRepository = Injection.provideRepository(getContext().getApplicationContext());
 
@@ -166,7 +168,6 @@ public class GameFragment extends Fragment implements GameContract.View, GameAda
     @Override
     public void setAdapterData(List<PhotoEntity> photoEntityList) {
         gameAdapter.setDataCardImages(photoEntityList);
-        hideLoadingView();
     }
 
     @Override
@@ -211,5 +212,19 @@ public class GameFragment extends Fragment implements GameContract.View, GameAda
         NameScoreDialogFragment nameScoreDialogFragment = NameScoreDialogFragment.newInstance(score);
         nameScoreDialogFragment.setTargetFragment(this, 0);
         nameScoreDialogFragment.show(getActivity().getSupportFragmentManager(), "fragment_score");
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.kittens_menu_item:
+                gamePresenter.onKittensMenuItemClicked();
+                return true;
+            case R.id.puppies_menu_item:
+                gamePresenter.onPuppiesMenuItemClicked();
+                return true;
+            default:
+                return false;
+        }
     }
 }

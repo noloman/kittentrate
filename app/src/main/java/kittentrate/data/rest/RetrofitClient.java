@@ -36,7 +36,6 @@ public class RetrofitClient {
                 Request request = chain.request();
                 HttpUrl url = request.url().newBuilder()
                         .addQueryParameter("method", "flickr.photos.search")
-                        .addQueryParameter("tags", "kitten")
                         // TODO
                         .addQueryParameter("per_page", Constants.CARDS_PER_PAGE)
                         .addQueryParameter("page", "1")

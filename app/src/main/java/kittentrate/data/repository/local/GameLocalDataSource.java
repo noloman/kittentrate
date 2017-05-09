@@ -37,7 +37,7 @@ public class GameLocalDataSource implements GameDataSource {
     }
 
     @Override
-    public void getPhotos(NetworkCallback networkCallback) {
+    public void getPhotos(final String photoTag, NetworkCallback networkCallback) {
         throw new UnsupportedOperationException("Operation not supported");
     }
 

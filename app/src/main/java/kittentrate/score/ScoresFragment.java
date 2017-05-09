@@ -16,8 +16,8 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import kittentrate.data.di.Injection;
-import kittentrate.data.repository.model.PhotoEntity;
 import kittentrate.data.repository.GameRepository;
+import kittentrate.data.repository.model.PhotoEntity;
 import kittentrate.data.rest.NetworkCallback;
 import manulorenzo.me.kittentrate.R;
 
@@ -44,6 +44,7 @@ public class ScoresFragment extends Fragment implements ScoresContract.View, Net
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        setHasOptionsMenu(false);
         View view = inflater.inflate(R.layout.scores_fragment, container, false);
         ButterKnife.bind(this, view);
         return view;
@@ -63,7 +64,6 @@ public class ScoresFragment extends Fragment implements ScoresContract.View, Net
         super.onCreate(savedInstanceState);
 
         Context applicationContext = getContext().getApplicationContext();
-
         GameRepository gameRepository = Injection.provideRepository(applicationContext);
 
         ScoresLoader scoresLoader = new ScoresLoader(applicationContext, gameRepository);

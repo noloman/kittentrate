@@ -54,5 +54,9 @@ public interface GameContract {
         void onGameScoreChanged(int gameScore);
 
         void notifyAdapterItemRemoved(String id);
+
+        void onKittensMenuItemClicked();
+
+        void onPuppiesMenuItemClicked();
     }
 }

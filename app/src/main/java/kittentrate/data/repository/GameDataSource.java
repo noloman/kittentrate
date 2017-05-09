@@ -10,9 +10,9 @@ import kittentrate.data.rest.NetworkCallback;
  */
 
 public interface GameDataSource {
-    void getPhotos(NetworkCallback networkCallback);
+    void getPhotos(final String photoTag, final NetworkCallback networkCallback);
 
     List<PlayerScore> getTopScores();
 
-    long addTopScore(PlayerScore playerScore);
+    long addTopScore(final PlayerScore playerScore);
 }

@@ -23,9 +23,9 @@ public class GameRemoteDataSource implements GameDataSource {
     }
 
     @Override
-    public void getPhotos(final NetworkCallback networkCallback) {
+    public void getPhotos(String photoTag, final NetworkCallback networkCallback) {
         final PhotoEntityMapperInterface serviceMapper = new PhotoEntityMapper();
-        Call<FlickrPhoto> call = RetrofitClient.getRetrofitClient().getPhotos();
+        Call<FlickrPhoto> call = RetrofitClient.getRetrofitClient().getPhotos(photoTag);
         call.enqueue(new Callback<FlickrPhoto>() {
             @Override
             public void onResponse(Call<FlickrPhoto> call, Response<FlickrPhoto> response) {

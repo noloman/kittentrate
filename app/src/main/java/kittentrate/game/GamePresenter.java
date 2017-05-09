@@ -19,7 +19,7 @@ public class GamePresenter implements GameContract.Presenter, NetworkCallback {
     private int score;
     private GameDomainContract.Manager manager;
 
-    public GamePresenter(GameRepository gameRepository, GameContract.View view) {
+    GamePresenter(GameRepository gameRepository, GameContract.View view) {
         this.view = view;
         this.manager = new GameManager(this);
         this.gameRepository = gameRepository;
@@ -28,7 +28,8 @@ public class GamePresenter implements GameContract.Presenter, NetworkCallback {
     @Override
     public void start() {
         view.showLoadingView();
-        gameRepository.getPhotos(this);
+        // TODO Get default tag
+        gameRepository.getPhotos("kitten", this);
     }
 
     @Override
@@ -55,7 +56,9 @@ public class GamePresenter implements GameContract.Presenter, NetworkCallback {
 
     @Override
     public void onSuccess(List<PhotoEntity> photoEntityList) {
+        view.showLoadingView();
         view.setAdapterData(photoEntityList);
+        view.hideLoadingView();
     }
 
     @Override
@@ -71,6 +74,16 @@ public class GamePresenter implements GameContract.Presenter, NetworkCallback {
     @Override
     public void notifyAdapterItemRemoved(String id) {
         view.notifyAdapterItemRemoved(id);
+    }
+
+    @Override
+    public void onKittensMenuItemClicked() {
+        gameRepository.getPhotos("kitten", this);
+    }
+
+    @Override
+    public void onPuppiesMenuItemClicked() {
+        gameRepository.getPhotos("puppy", this);
     }
 
     @Override

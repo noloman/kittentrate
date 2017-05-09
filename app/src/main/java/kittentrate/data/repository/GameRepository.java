@@ -26,8 +26,8 @@ public class GameRepository implements GameDataSource {
     }
 
     @Override
-    public void getPhotos(NetworkCallback networkCallback) {
-        remoteDataSource.getPhotos(networkCallback);
+    public void getPhotos(final String photoTag, NetworkCallback networkCallback) {
+        remoteDataSource.getPhotos(photoTag, networkCallback);
     }
 
     @Override
