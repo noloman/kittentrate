@@ -8,10 +8,12 @@ buildscript {
     }
 }
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
 apply plugin: 'io.fabric'
 
 repositories {
     maven { url 'https://maven.fabric.io/public' }
+    mavenCentral()
 }
 
 apply plugin: 'io.fabric'
@@ -107,6 +109,7 @@ dependencies {
 
     testCompile "junit:junit:$jUnitVersion"
     testCompile "org.mockito:mockito-core:$mockitoVersion"
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
 }
 
 configurations.all {
