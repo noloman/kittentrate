@@ -39,4 +39,9 @@ public class GameRepository implements GameDataSource {
     public long addTopScore(PlayerScore playerScore) {
         return localDataSource.addTopScore(playerScore);
     }
+
+    @Override
+    public void deleteAllScores() {
+        localDataSource.deleteAllScores();
+    }
 }

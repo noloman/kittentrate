@@ -49,6 +49,11 @@ public class GameRemoteDataSource implements GameDataSource {
         throw new UnsupportedOperationException("Operation not supported");
     }
 
+    @Override
+    public void deleteAllScores() {
+        throw new UnsupportedOperationException("Operation not supported");
+    }
+
     public static GameRemoteDataSource getInstance() {
         if (gameRemoteDataSource == null) {
             gameRemoteDataSource = new GameRemoteDataSource();
