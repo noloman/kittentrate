@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.List;
@@ -27,6 +28,8 @@ import manulorenzo.me.kittentrate.R;
 public class ScoresFragment extends Fragment implements ScoresContract.View, NetworkCallback {
     @BindView(R.id.scores_recyclerview)
     RecyclerView recyclerView;
+    @BindView(R.id.scores_layout)
+    LinearLayout scoresLayout;
     @BindView(R.id.empty_textview)
     TextView emptyTextView;
     private ScoresAdapter scoresAdapter;
@@ -74,7 +77,7 @@ public class ScoresFragment extends Fragment implements ScoresContract.View, Net
     @Override
     public void showScores(List<PlayerScore> data) {
         emptyTextView.setVisibility(View.GONE);
-        recyclerView.setVisibility(View.VISIBLE);
+        scoresLayout.setVisibility(View.VISIBLE);
         if (recyclerView.getAdapter() == null) {
             recyclerView.setAdapter(scoresAdapter);
         }
@@ -83,7 +86,7 @@ public class ScoresFragment extends Fragment implements ScoresContract.View, Net
 
     @Override
     public void showEmptyView() {
-        emptyTextView.setVisibility(View.VISIBLE);
+        scoresLayout.setVisibility(View.VISIBLE);
         recyclerView.setVisibility(View.GONE);
     }
 
