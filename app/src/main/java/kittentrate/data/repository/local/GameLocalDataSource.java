@@ -13,8 +13,8 @@ import java.util.List;
 import java.util.UUID;
 
 import kittentrate.data.repository.GameDataSource;
-import kittentrate.score.PlayerScore;
 import kittentrate.data.rest.NetworkCallback;
+import kittentrate.score.PlayerScore;
 import kittentrate.utils.Constants;
 
 /**
@@ -82,5 +82,14 @@ public class GameLocalDataSource implements GameDataSource {
             Crashlytics.logException(e);
         }
         return rowId;
+    }
+
+    @Override
+    public void deleteAllScores() {
+        sqLiteDatabase.delete(GameScoreDbContract.ScoreEntry.TABLE_NAME, null, null);
+    }
+
+    static void destroyInstance() {
+        gameLocalDataSource = null;
     }
 }

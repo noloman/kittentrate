@@ -15,4 +15,6 @@ public interface GameDataSource {
     List<PlayerScore> getTopScores();
 
     long addTopScore(final PlayerScore playerScore);
+
+    void deleteAllScores();
 }
