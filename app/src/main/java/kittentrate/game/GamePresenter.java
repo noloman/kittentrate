@@ -4,10 +4,11 @@ import android.widget.ViewFlipper;
 
 import java.util.List;
 
-import kittentrate.data.repository.model.PhotoEntity;
 import kittentrate.data.repository.GameRepository;
-import kittentrate.score.PlayerScore;
+import kittentrate.data.repository.model.PhotoEntity;
 import kittentrate.data.rest.NetworkCallback;
+import kittentrate.score.PlayerScore;
+import kittentrate.utils.Constants;
 
 /**
  * Created by Manuel Lorenzo on 18/03/2017.
@@ -15,26 +16,25 @@ import kittentrate.data.rest.NetworkCallback;
 
 public class GamePresenter implements GameContract.Presenter, NetworkCallback {
     private final GameContract.View view;
-    private GameRepository gameRepository;
+    private GameRepository repository;
     private int score;
     private GameDomainContract.Manager manager;
 
-    GamePresenter(GameRepository gameRepository, GameContract.View view) {
+    GamePresenter(GameRepository repository, GameContract.View view) {
         this.view = view;
         this.manager = new GameManager(this);
-        this.gameRepository = gameRepository;
+        this.repository = repository;
     }
 
     @Override
     public void start() {
         view.showLoadingView();
-        // TODO Get default tag
-        gameRepository.getPhotos("kitten", this);
+        repository.getPhotos(this);
     }
 
     @Override
     public void onScoredEntered(PlayerScore playerScore) {
-        if (gameRepository.addTopScore(playerScore) == -1) {
+        if (repository.addTopScore(playerScore) == -1) {
             view.showErrorView();
         }
     }
@@ -78,12 +78,18 @@ public class GamePresenter implements GameContract.Presenter, NetworkCallback {
 
     @Override
     public void onKittensMenuItemClicked() {
-        gameRepository.getPhotos("kitten", this);
+        repository.setPreferencesPhotoTag(Constants.PHOTO_TAG_KITTEN_VALUE);
+        repository.getPhotos(this);
+        manager.resetScore();
+        view.onScoreChanged(0);
     }
 
     @Override
     public void onPuppiesMenuItemClicked() {
-        gameRepository.getPhotos("puppy", this);
+        repository.setPreferencesPhotoTag(Constants.PHOTO_TAG_KITTEN_VALUE);
+        repository.getPhotos(this);
+        manager.resetScore();
+        view.onScoreChanged(0);
     }
 
     @Override

@@ -10,11 +10,26 @@ import kittentrate.data.rest.NetworkCallback;
  */
 
 public interface GameDataSource {
-    void getPhotos(final String photoTag, final NetworkCallback networkCallback);
+    interface Repository {
+        void getPhotos(final NetworkCallback networkCallback);
+    }
 
-    List<PlayerScore> getTopScores();
+    interface LocalDataSource {
+        List<PlayerScore> getTopScores();
 
-    long addTopScore(final PlayerScore playerScore);
+        long addTopScore(final PlayerScore playerScore);
 
-    void deleteAllScores();
+        void deleteAllScores();
+    }
+
+    interface RemoteDataSource {
+        void getPhotos(final String photoTag, final NetworkCallback networkCallback);
+    }
+
+    interface SharedPreferencesDataSource {
+
+        void setPreferencesPhotoTag(String photoTag);
+
+        String getPreferencesPhotoTag();
+    }
 }

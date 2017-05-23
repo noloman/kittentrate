@@ -11,5 +11,7 @@ public interface GameDomainContract {
         void removeCardsFromMap();
 
         boolean shouldDispatchUiEvent();
+
+        void resetScore();
     }
 }

@@ -97,6 +97,7 @@ public class GameFragment extends Fragment implements GameContract.View, GameAda
         return view;
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);

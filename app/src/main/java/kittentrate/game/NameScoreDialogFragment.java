@@ -1,5 +1,6 @@
 package kittentrate.game;
 
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.graphics.Point;
 import android.os.Bundle;
@@ -18,8 +19,8 @@ import android.widget.TextView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import manulorenzo.me.kittentrate.R;
 import kittentrate.score.PlayerScore;
+import manulorenzo.me.kittentrate.R;
 
 /**
  * Created by Manuel Lorenzo
@@ -75,11 +76,22 @@ public class NameScoreDialogFragment extends DialogFragment implements DialogInt
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        setStyle(DialogFragment.STYLE_NORMAL, R.style.AppTheme_ScoreDialog);
+        //setStyle(DialogFragment.STYLE_NORMAL, R.style.AppTheme_ScoreDialog);
         scoreTextView.setText(String.valueOf(score));
 
         nameEditText.requestFocus();
         getDialog().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        Dialog dialog = getDialog();
+        if (dialog != null) {
+            int width = ViewGroup.LayoutParams.MATCH_PARENT;
+            int height = ViewGroup.LayoutParams.MATCH_PARENT;
+            dialog.getWindow().setLayout(width, height);
+        }
     }
 
     public void onResume() {

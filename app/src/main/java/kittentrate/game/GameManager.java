@@ -66,6 +66,11 @@ public class GameManager implements GameDomainContract.Manager {
         return facingUpCardsWeakHashMap.size() != Constants.NUMBER_MATCHING_CARDS;
     }
 
+    @Override
+    public void resetScore() {
+        resetGameScore();
+    }
+
     private boolean shouldCheckForCardsMatch() {
         return facingUpCardsWeakHashMap.size() == Constants.NUMBER_MATCHING_CARDS;
     }
@@ -80,5 +85,9 @@ public class GameManager implements GameDomainContract.Manager {
 
     private int getGameScore() {
         return game.getScore();
+    }
+
+    private void resetGameScore() {
+        game.setScore(0);
     }
 }

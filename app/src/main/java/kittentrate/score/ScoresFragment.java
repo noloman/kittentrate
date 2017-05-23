@@ -3,32 +3,37 @@ package kittentrate.score;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import kittentrate.MainActivity;
 import kittentrate.data.di.Injection;
 import kittentrate.data.repository.GameRepository;
 import kittentrate.data.repository.model.PhotoEntity;
 import kittentrate.data.rest.NetworkCallback;
+import kittentrate.navigation.Screen;
 import manulorenzo.me.kittentrate.R;
 
-/**
- * A placeholder fragment containing a simple view.
- */
-public class ScoresFragment extends Fragment implements ScoresContract.View, NetworkCallback {
+public class ScoresFragment extends Fragment implements ScoresContract.View, NetworkCallback, View.OnClickListener {
     @BindView(R.id.scores_recyclerview)
     RecyclerView recyclerView;
+    @BindView(R.id.scores_layout)
+    LinearLayout scoresLayout;
     @BindView(R.id.empty_textview)
     TextView emptyTextView;
+    @BindView(R.id.scores_fab)
+    FloatingActionButton scoresFab;
     private ScoresAdapter scoresAdapter;
 
     public ScoresFragment() {
@@ -57,6 +62,7 @@ public class ScoresFragment extends Fragment implements ScoresContract.View, Net
             scoresAdapter = new ScoresAdapter();
             recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         }
+        scoresFab.setOnClickListener(this);
     }
 
     @Override
@@ -74,7 +80,7 @@ public class ScoresFragment extends Fragment implements ScoresContract.View, Net
     @Override
     public void showScores(List<PlayerScore> data) {
         emptyTextView.setVisibility(View.GONE);
-        recyclerView.setVisibility(View.VISIBLE);
+        scoresLayout.setVisibility(View.VISIBLE);
         if (recyclerView.getAdapter() == null) {
             recyclerView.setAdapter(scoresAdapter);
         }
@@ -83,7 +89,7 @@ public class ScoresFragment extends Fragment implements ScoresContract.View, Net
 
     @Override
     public void showEmptyView() {
-        emptyTextView.setVisibility(View.VISIBLE);
+        scoresLayout.setVisibility(View.VISIBLE);
         recyclerView.setVisibility(View.GONE);
     }
 
@@ -95,5 +101,10 @@ public class ScoresFragment extends Fragment implements ScoresContract.View, Net
     @Override
     public void onFailure(Throwable t) {
         throw new UnsupportedOperationException("Unsupported");
+    }
+
+    @Override
+    public void onClick(View v) {
+        ((MainActivity) getActivity()).navigateTo(Screen.GAME);
     }
 }

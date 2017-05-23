@@ -13,14 +13,13 @@ import java.util.List;
 import java.util.UUID;
 
 import kittentrate.data.repository.GameDataSource;
-import kittentrate.data.rest.NetworkCallback;
 import kittentrate.score.PlayerScore;
 import kittentrate.utils.Constants;
 
 /**
  * Created by Manuel Lorenzo
  */
-public class GameLocalDataSource implements GameDataSource {
+public class GameLocalDataSource implements GameDataSource.LocalDataSource {
     private SQLiteDatabase sqLiteDatabase;
     private static GameLocalDataSource gameLocalDataSource;
 
@@ -34,11 +33,6 @@ public class GameLocalDataSource implements GameDataSource {
     private GameLocalDataSource(Context context) {
         GameDbHelper gameDbHelper = new GameDbHelper(context);
         sqLiteDatabase = gameDbHelper.getWritableDatabase();
-    }
-
-    @Override
-    public void getPhotos(final String photoTag, NetworkCallback networkCallback) {
-        throw new UnsupportedOperationException("Operation not supported");
     }
 
     @Override
