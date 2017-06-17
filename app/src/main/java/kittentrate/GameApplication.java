@@ -4,11 +4,20 @@ import android.app.Application;
 
 import com.squareup.leakcanary.LeakCanary;
 
+import kittentrate.data.di.DaggerNetworkComponent;
+import kittentrate.data.di.NetworkComponent;
+import retrofit2.Retrofit;
+
 /**
  * Created by Manuel Lorenzo
  */
 
 public class GameApplication extends Application {
+    private Retrofit retrofit;
+
+    public Retrofit getRetrofit() {
+        return retrofit;
+    }
 
     @Override
     public void onCreate() {
@@ -19,6 +28,9 @@ public class GameApplication extends Application {
             return;
         }
         LeakCanary.install(this);
-        // Normal app init code...}
+        // Normal app init code...
+        NetworkComponent networkComponent = DaggerNetworkComponent.builder()
+                .build();
+        retrofit = networkComponent.retrofit();
     }
 }

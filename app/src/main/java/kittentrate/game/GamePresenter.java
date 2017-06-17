@@ -19,7 +19,7 @@ public class GamePresenter implements GameContract.Presenter, NetworkCallback {
     private int score;
     private GameDomainContract.Manager manager;
 
-    public GamePresenter(GameRepository gameRepository, GameContract.View view) {
+    GamePresenter(GameRepository gameRepository, GameContract.View view) {
         this.view = view;
         this.manager = new GameManager(this);
         this.gameRepository = gameRepository;
