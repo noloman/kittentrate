@@ -18,26 +18,37 @@ import butterknife.ButterKnife
 import kittentrate.MainActivity
 import kittentrate.data.di.Injection
 import kittentrate.data.repository.model.PhotoEntity
+import kittentrate.data.viewmodel.NetworkViewState
 import kittentrate.navigation.Screen
 import kittentrate.score.PlayerScore
 import kittentrate.utils.Constants
 import kittentrate.view.custom.AutofitRecyclerView
 import manulorenzo.me.kittentrate.R
 import java.util.*
+import kotlin.properties.Delegates
 
 class GameFragment : Fragment(),
         GameContract.View,
         GameAdapter.OnItemClickListener,
         NameScoreDialogFragment.NameScoreKeyListener {
-
+    override var networkViewState: NetworkViewState by Delegates.observable<NetworkViewState>(
+            NetworkViewState.None(),
+            { _, _, newValue ->
+                when (newValue) {
+                    is NetworkViewState.Loading -> showLoadingView()
+                    is NetworkViewState.Success<*> -> hideLoadingView()
+                    is NetworkViewState.Error -> showErrorView()
+                }
+            })
     @BindView(R.id.floating_textview)
     internal lateinit var floatingTextView: TextView
     @BindView(R.id.recycler_view)
     internal lateinit var autofitRecyclerView: AutofitRecyclerView
-    private var gameAdapter: GameAdapter? = null
+
+    private lateinit var gameAdapter: GameAdapter
     private val viewFlipperCardWeakHashMap = WeakHashMap<ViewFlipper, Card>(Constants.NUMBER_MATCHING_CARDS)
-    private lateinit var loadingDialog: ProgressDialog
     private lateinit var gamePresenter: GamePresenter
+    private lateinit var loadingDialog: ProgressDialog
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
@@ -76,9 +87,7 @@ class GameFragment : Fragment(),
     @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        if (autofitRecyclerView.adapter == null) {
-            autofitRecyclerView.adapter = gameAdapter
-        }
+        autofitRecyclerView.adapter = gameAdapter
         if (savedInstanceState != null && savedInstanceState.getInt(SCORE_BUNDLE_KEY) != 0) {
             val score = savedInstanceState.getInt(SCORE_BUNDLE_KEY)
             floatingTextView.text = Integer.toString(score)
@@ -110,15 +119,15 @@ class GameFragment : Fragment(),
     }
 
     override fun notifyAdapterItemChanged(pos: Int) {
-        gameAdapter?.notifyItemChanged(pos)
+        gameAdapter.notifyItemChanged(pos)
     }
 
     override fun notifyAdapterItemRemoved(id: String) {
-        gameAdapter?.removeItem(id)
+        gameAdapter.removeItem(id)
     }
 
     override fun setAdapterData(photoEntityList: List<PhotoEntity>) {
-        gameAdapter?.setDataCardImages(photoEntityList)
+        gameAdapter.setDataCardImages(photoEntityList)
     }
 
     override fun removeViewFlipper() {
@@ -136,14 +145,12 @@ class GameFragment : Fragment(),
     }
 
     override fun checkGameFinished() {
-        if (gameAdapter?.itemCount == 0) {
+        if (gameAdapter.itemCount == 0) {
             showScoreFragmentDialog(gamePresenter.score)
         }
     }
 
-    override fun shouldDispatchTouchEvent(): Boolean {
-        return gamePresenter.shouldDispatchTouchEvent()
-    }
+    override fun shouldDispatchTouchEvent(): Boolean = gamePresenter.shouldDispatchTouchEvent()
 
     @SuppressLint("SetTextI18n")
     override fun onScoreChanged(gameScore: Int) {

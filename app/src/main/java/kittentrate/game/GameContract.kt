@@ -3,6 +3,7 @@ package kittentrate.game
 import android.widget.ViewFlipper
 
 import kittentrate.data.repository.model.PhotoEntity
+import kittentrate.data.viewmodel.NetworkViewState
 import kittentrate.score.PlayerScore
 
 /**
@@ -11,6 +12,8 @@ import kittentrate.score.PlayerScore
 
 interface GameContract {
     interface View {
+        var networkViewState: NetworkViewState
+
         fun showLoadingView()
 
         fun hideLoadingView()

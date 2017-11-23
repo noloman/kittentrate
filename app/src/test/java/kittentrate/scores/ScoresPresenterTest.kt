@@ -31,7 +31,6 @@ class ScoresPresenterTest {
     }
 
     @Test
-    @Throws(Exception::class)
     fun `ScoresPresenter should initialize itself by fetching the top scores from the repo`() {
         scoresPresenter.start()
 

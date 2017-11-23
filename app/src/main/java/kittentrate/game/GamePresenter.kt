@@ -2,6 +2,7 @@ package kittentrate.game
 
 import android.widget.ViewFlipper
 import kittentrate.data.repository.GameRepository
+import kittentrate.data.viewmodel.NetworkViewState
 import kittentrate.score.PlayerScore
 import kittentrate.utils.Constants
 
@@ -20,13 +21,13 @@ class GamePresenter internal constructor(private val repository: GameRepository,
     }
 
     override fun start() {
-        view.showLoadingView()
         getPhotosFromRepo()
     }
 
     override fun onScoredEntered(playerScore: PlayerScore) {
         if (repository.addTopScore(playerScore) == -1L) {
-            view.showErrorView()
+            // TODO Error
+            view.networkViewState = NetworkViewState.Error(null)
         }
     }
 
@@ -57,7 +58,6 @@ class GamePresenter internal constructor(private val repository: GameRepository,
     }
 
     override fun onPuppiesMenuItemClicked() {
-        view.showLoadingView()
         repository.preferencesPhotoTag = Constants.PHOTO_TAG_PUPPY_VALUE
         getPhotosFromRepo()
         manager.resetScore()
@@ -65,13 +65,14 @@ class GamePresenter internal constructor(private val repository: GameRepository,
     }
 
     private fun getPhotosFromRepo() {
+        view.networkViewState = NetworkViewState.Loading()
         repository.photos.subscribe(
                 { photoEntityList ->
                     run {
                         view.setAdapterData(photoEntityList)
-                        view.hideLoadingView()
+                        view.networkViewState = NetworkViewState.Success(photoEntityList)
                     }
-                })
+                }, { throwable -> view.networkViewState = NetworkViewState.Error(throwable.localizedMessage) })
     }
 
     override fun removeViewFlipper() {
