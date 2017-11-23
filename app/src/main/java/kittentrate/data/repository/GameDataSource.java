@@ -2,8 +2,10 @@ package kittentrate.data.repository;
 
 import java.util.List;
 
+import io.reactivex.Observable;
+import kittentrate.data.repository.model.FlickrPhoto;
+import kittentrate.data.repository.model.PhotoEntity;
 import kittentrate.score.PlayerScore;
-import kittentrate.data.rest.NetworkCallback;
 
 /**
  * Created by Manuel Lorenzo on 18/03/2017.
@@ -11,11 +13,11 @@ import kittentrate.data.rest.NetworkCallback;
 
 public interface GameDataSource {
     interface Repository {
-        void getPhotos(final NetworkCallback networkCallback);
+        Observable<List<PhotoEntity>> getPhotos();
     }
 
     interface LocalDataSource {
-        List<PlayerScore> getTopScores();
+        Observable<List<PlayerScore>> getTopScores();
 
         long addTopScore(final PlayerScore playerScore);
 
@@ -23,13 +25,13 @@ public interface GameDataSource {
     }
 
     interface RemoteDataSource {
-        void getPhotos(final String photoTag, final NetworkCallback networkCallback);
+        Observable<FlickrPhoto> getPhotos(final String photoTag);
     }
 
     interface SharedPreferencesDataSource {
 
-        void setPreferencesPhotoTag(String photoTag);
-
         String getPreferencesPhotoTag();
+
+        void setPreferencesPhotoTag(String photoTag);
     }
 }

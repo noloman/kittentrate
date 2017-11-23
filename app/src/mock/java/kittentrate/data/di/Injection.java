@@ -17,7 +17,8 @@ public class Injection {
     }
 
     public static GameRepository provideRepository(@NonNull Context context) {
-        return GameRepository.getInstance(GameLocalDataSource.getInstance(context),
-                GameRemoteDataSource.getInstance(), new SharedPreferencesManager(context));
+        return GameRepository.Companion.getInstance(GameLocalDataSource.getInstance(context),
+                GameRemoteDataSource.Companion.getInstance(),
+                new SharedPreferencesManager(context));
     }
 }

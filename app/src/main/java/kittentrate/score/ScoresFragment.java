@@ -20,12 +20,10 @@ import butterknife.ButterKnife;
 import kittentrate.MainActivity;
 import kittentrate.data.di.Injection;
 import kittentrate.data.repository.GameRepository;
-import kittentrate.data.repository.model.PhotoEntity;
-import kittentrate.data.rest.NetworkCallback;
 import kittentrate.navigation.Screen;
 import manulorenzo.me.kittentrate.R;
 
-public class ScoresFragment extends Fragment implements ScoresContract.View, NetworkCallback, View.OnClickListener {
+public class ScoresFragment extends Fragment implements ScoresContract.View, View.OnClickListener {
     @BindView(R.id.scores_recyclerview)
     RecyclerView recyclerView;
     @BindView(R.id.scores_layout)
@@ -72,8 +70,7 @@ public class ScoresFragment extends Fragment implements ScoresContract.View, Net
         Context applicationContext = getContext().getApplicationContext();
         GameRepository gameRepository = Injection.provideRepository(applicationContext);
 
-        ScoresLoader scoresLoader = new ScoresLoader(applicationContext, gameRepository);
-        ScoresPresenter scoresPresenter = new ScoresPresenter(this, scoresLoader, getLoaderManager());
+        ScoresPresenter scoresPresenter = new ScoresPresenter(this, gameRepository);
         scoresPresenter.start();
     }
 
@@ -91,16 +88,6 @@ public class ScoresFragment extends Fragment implements ScoresContract.View, Net
     public void showEmptyView() {
         scoresLayout.setVisibility(View.VISIBLE);
         recyclerView.setVisibility(View.GONE);
-    }
-
-    @Override
-    public void onSuccess(List<PhotoEntity> success) {
-        throw new UnsupportedOperationException("Unsupported");
-    }
-
-    @Override
-    public void onFailure(Throwable t) {
-        throw new UnsupportedOperationException("Unsupported");
     }
 
     @Override

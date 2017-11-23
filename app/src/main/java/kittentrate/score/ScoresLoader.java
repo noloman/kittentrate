@@ -5,15 +5,16 @@ import android.support.v4.content.AsyncTaskLoader;
 
 import java.util.List;
 
+import io.reactivex.Observable;
 import kittentrate.data.repository.GameRepository;
 
 /**
  * Created by Manuel Lorenzo
  */
 
-public class ScoresLoader extends AsyncTaskLoader<List<PlayerScore>> {
+public class ScoresLoader extends AsyncTaskLoader<Observable<List<PlayerScore>>> {
     private final GameRepository gameRepository;
-    private List<PlayerScore> scoreList;
+    private Observable<List<PlayerScore>> scoreList;
 
     ScoresLoader(Context context, GameRepository gameRepository) {
         super(context);
@@ -21,7 +22,7 @@ public class ScoresLoader extends AsyncTaskLoader<List<PlayerScore>> {
     }
 
     @Override
-    public List<PlayerScore> loadInBackground() {
+    public Observable<List<PlayerScore>> loadInBackground() {
         return gameRepository.getTopScores();
     }
 
@@ -37,7 +38,7 @@ public class ScoresLoader extends AsyncTaskLoader<List<PlayerScore>> {
     }
 
     @Override
-    public void deliverResult(List<PlayerScore> data) {
+    public void deliverResult(Observable<List<PlayerScore>> data) {
         if (isReset()) {
             return;
         }

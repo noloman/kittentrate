@@ -4,14 +4,9 @@ import android.support.v4.app.LoaderManager;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import java.util.List;
-
-import kittentrate.score.PlayerScore;
 import kittentrate.score.ScoresContract;
 import kittentrate.score.ScoresLoader;
 import kittentrate.score.ScoresPresenter;
@@ -44,7 +39,7 @@ public class ScoresPresenterTest {
         scoresPresenter.start();
 
         verify(loaderManager).initLoader(
-                eq(ScoresPresenter.LOADER_ID),
+                eq(ScoresPresenter.Companion.getLOADER_ID()),
                 eq(null),
                 any(LoaderManager.LoaderCallbacks.class));
     }
