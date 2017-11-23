@@ -58,7 +58,7 @@ public class MainActivity extends AppCompatActivity implements Navigator {
         setupDrawerContent(navigationView);
         Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragment_content);
         if (fragment == null) {
-            loadFragment(GameFragment.newInstance(), navigationView.getMenu().getItem(0));
+            loadFragment(GameFragment.Companion.newInstance(), navigationView.getMenu().getItem(0));
         }
     }
 
@@ -153,7 +153,7 @@ public class MainActivity extends AppCompatActivity implements Navigator {
     public void navigateTo(Screen screen) {
         switch (screen) {
             case GAME:
-                loadFragment(GameFragment.newInstance(), navigationView.getMenu().getItem(0));
+                loadFragment(GameFragment.Companion.newInstance(), navigationView.getMenu().getItem(0));
                 break;
             case SCORES:
                 loadFragment(ScoresFragment.newInstance(), navigationView.getMenu().getItem(0));

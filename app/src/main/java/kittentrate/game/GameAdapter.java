@@ -39,9 +39,7 @@ public class GameAdapter extends RecyclerView.Adapter<GameAdapter.CardViewHolder
     void setDataCardImages(List<PhotoEntity> entityList) {
         cardList.clear();
         for (int i = 0; i < entityList.size(); i++) {
-            Card card = new Card();
-            card.setImageCoverUrl(entityList.get(i).getUrl());
-            card.setId(entityList.get(i).getId());
+            Card card = new Card(entityList.get(i).getId(), entityList.get(i).getUrl());
             cardList.add(card);
         }
         notifyDataSetChanged();

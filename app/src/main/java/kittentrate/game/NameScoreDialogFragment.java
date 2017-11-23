@@ -34,17 +34,13 @@ public class NameScoreDialogFragment extends DialogFragment implements DialogInt
     int score;
     private NameScoreKeyListener nameScoreKeyListener;
 
-    public interface NameScoreKeyListener {
-        void onEnterKeyPressed(PlayerScore playerScore);
-    }
-
     public NameScoreDialogFragment() {
 
     }
 
     public static NameScoreDialogFragment newInstance(int score) {
         Bundle args = new Bundle();
-        args.putInt(GameFragment.SCORE_BUNDLE_KEY, score);
+        args.putInt(GameFragment.Companion.getSCORE_BUNDLE_KEY(), score);
         NameScoreDialogFragment fragment = new NameScoreDialogFragment();
         fragment.setArguments(args);
         return fragment;
@@ -59,8 +55,8 @@ public class NameScoreDialogFragment extends DialogFragment implements DialogInt
             throw new ClassCastException(getTargetFragment().toString() + " must implement NameScoreKeyListener");
         }
         setStyle(DialogFragment.STYLE_NORMAL, R.style.AppTheme_ScoreDialog);
-        if (getArguments() != null && getArguments().getInt(GameFragment.SCORE_BUNDLE_KEY, 0) != 0) {
-            score = getArguments().getInt(GameFragment.SCORE_BUNDLE_KEY);
+        if (getArguments() != null && getArguments().getInt(GameFragment.Companion.getSCORE_BUNDLE_KEY(), 0) != 0) {
+            score = getArguments().getInt(GameFragment.Companion.getSCORE_BUNDLE_KEY());
         }
     }
 
@@ -122,5 +118,9 @@ public class NameScoreDialogFragment extends DialogFragment implements DialogInt
                 return true;
         }
         return false;
+    }
+
+    public interface NameScoreKeyListener {
+        void onEnterKeyPressed(PlayerScore playerScore);
     }
 }
