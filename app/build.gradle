@@ -46,6 +46,13 @@ android {
                                      "$projectDir/schemas".toString()]
             }
         }
+        if (keystorePropertiesFile != null &&
+                keystorePropertiesFile.canRead() &&
+                keystoreProperties.containsKey("fabricApiKeyValue")) {
+            buildConfigField "String", "FLICKR_API_KEY", keystoreProperties["FlickrApiKey"]
+        } else {
+            buildConfigField "String", "FLICKR_API_KEY", System.getenv("FlickrApiKey")
+        }
     }
     // used by Room, to test migrations
     sourceSets {
@@ -93,13 +100,6 @@ android {
             } else {
                 manifestPlaceholders = [fabricApiKeyValue: System.getenv("fabricApiKeyValue")]
             }
-        }
-    }
-    buildTypes.each {
-        if (keystorePropertiesFile != null && keystorePropertiesFile.canRead() && keystoreProperties.containsKey("fabricApiKeyValue")) {
-            it.buildConfigField 'String', 'FLICKR_API_KEY', keystoreProperties["FlickrApiKey"]
-        } else {
-            it.buildConfigField 'String', 'FLICKR_API_KEY', System.getenv("FlickrApiKey")
         }
     }
 }
