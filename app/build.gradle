@@ -104,7 +104,8 @@ android {
     }
 }
 
-if (keystorePropertiesFile != null && keystorePropertiesFile.canRead()
+if (keystorePropertiesFile != null
+        && keystorePropertiesFile.canRead()
         && keystoreProperties.containsKey('keyAlias')
         && keystoreProperties.containsKey('keyPassword')
         && keystoreProperties.containsKey('storeFile')
@@ -116,7 +117,6 @@ if (keystorePropertiesFile != null && keystorePropertiesFile.canRead()
 } else {
     android.signingConfigs.release.keyAlias System.getenv("keyAlias")
     android.signingConfigs.release.keyPassword System.getenv("keyPassword")
-    android.signingConfigs.release.storeFile System.getenv("storeFile")
     android.signingConfigs.release.storePassword System.getenv("storePassword")
 }
 
