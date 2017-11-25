@@ -24,15 +24,10 @@ keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 
 android {
     signingConfigs {
-        kittentrate {
-            keyAlias keystoreProperties['keyAlias']
-            keyPassword keystoreProperties['keyPassword']
-            storeFile file(keystoreProperties['storeFile'])
-            storePassword keystoreProperties['storePassword']
-        }
+        release
     }
     compileSdkVersion 27
-    buildToolsVersion '27.0.0'
+    buildToolsVersion '27.0.1'
     defaultConfig {
         applicationId "manulorenzo.me.kittentrate"
         minSdkVersion 15
@@ -70,7 +65,7 @@ android {
         release {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.kittentrate
+            signingConfig signingConfigs.release
         }
     }
 
@@ -79,16 +74,48 @@ android {
         mock {
             dimension "mode"
             applicationIdSuffix ".mock"
-            manifestPlaceholders = [fabricApiKeyValue: keystoreProperties["fabricApiKeyValue"]]
+            if (keystorePropertiesFile != null
+                    && keystorePropertiesFile.canRead() &&
+                    keystoreProperties.containsKey("fabricApiKeyValue")) {
+                manifestPlaceholders = [fabricApiKeyValue: keystoreProperties["fabricApiKeyValue"]]
+            } else {
+                manifestPlaceholders = [fabricApiKeyValue: System.getenv("fabricApiKeyValue")]
+            }
         }
         prod {
             dimension "mode"
-            manifestPlaceholders = [fabricApiKeyValue: keystoreProperties["fabricApiKeyValue"]]
+            if (keystorePropertiesFile != null &&
+                    keystorePropertiesFile.canRead() &&
+                    keystoreProperties.containsKey("fabricApiKeyValue")) {
+                manifestPlaceholders = [fabricApiKeyValue: keystoreProperties["fabricApiKeyValue"]]
+            } else {
+                manifestPlaceholders = [fabricApiKeyValue: System.getenv("fabricApiKeyValue")]
+            }
         }
     }
     buildTypes.each {
-        it.buildConfigField 'String', 'FLICKR_API_KEY', keystoreProperties['FlickrApiKey']
+        if (keystorePropertiesFile != null && keystorePropertiesFile.canRead() && keystoreProperties.containsKey("fabricApiKeyValue")) {
+            it.buildConfigField 'String', 'FLICKR_API_KEY', keystoreProperties["FlickrApiKey"]
+        } else {
+            it.buildConfigField 'String', 'FLICKR_API_KEY', System.getenv("FlickrApiKey")
+        }
     }
+}
+
+if (keystorePropertiesFile != null && keystorePropertiesFile.canRead()
+        && keystoreProperties.containsKey('keyAlias')
+        && keystoreProperties.containsKey('keyPassword')
+        && keystoreProperties.containsKey('storeFile')
+        && keystoreProperties.containsKey('storePassword')) {
+    android.signingConfigs.release.keyAlias keystoreProperties['keyAlias']
+    android.signingConfigs.release.keyPassword keystoreProperties['keyPassword']
+    android.signingConfigs.release.storeFile file(keystoreProperties['storeFile'])
+    android.signingConfigs.release.storePassword keystoreProperties['storePassword']
+} else {
+    android.signingConfigs.release.keyAlias System.getenv("keyAlias")
+    android.signingConfigs.release.keyPassword System.getenv("keyPassword")
+    android.signingConfigs.release.storeFile System.getenv("storeFile")
+    android.signingConfigs.release.storePassword System.getenv("storePassword")
 }
 
 dependencies {
@@ -133,6 +160,7 @@ dependencies {
     debugImplementation "com.squareup.leakcanary:leakcanary-android:$leakCanaryVersion"
     testImplementation "com.squareup.leakcanary:leakcanary-android:$leakCanaryVersion"
     testImplementation "org.robolectric:robolectric:$robolectricVersion"
+    androidTestImplementation "org.robolectric:robolectric:$robolectricVersion"
     releaseImplementation "com.squareup.leakcanary:leakcanary-android-no-op:$leakCanaryVersion"
 
     // Room
