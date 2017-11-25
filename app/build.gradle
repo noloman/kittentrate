@@ -168,14 +168,15 @@ dependencies {
     // Room
     implementation "android.arch.persistence.room:runtime:$roomVersion"
     annotationProcessor "android.arch.persistence.room:compiler:$roomVersion"
+    kapt "android.arch.persistence.room:compiler:$roomVersion"
     androidTestImplementation "android.arch.persistence.room:testing:$roomVersion"
     implementation "android.arch.persistence.room:rxjava2:$roomVersion"
-    kapt "android.arch.persistence.room:compiler:$roomVersion"
 
     // Lifecycles
     implementation "android.arch.lifecycle:runtime:1.0.3"
     // not necessary if you are using lifecycle:extensions or lifecycle:common-java8
     annotationProcessor "android.arch.lifecycle:compiler:1.0.0"
+    kapt "android.arch.lifecycle:compiler:1.0.0"
     // not needed if you are using the DefaultLifecycleObserver from common-java8 artifact.
     implementation "android.arch.lifecycle:common-java8:1.0.0"
 
