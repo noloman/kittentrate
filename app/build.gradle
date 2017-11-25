@@ -37,6 +37,7 @@ android {
         versionCode 2
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        multiDexEnabled true
         vectorDrawables.useSupportLibrary = true
 
         // used by Room, to test migrations
@@ -53,6 +54,9 @@ android {
         } else {
             buildConfigField "String", "FLICKR_API_KEY", System.getenv("FlickrApiKey")
         }
+    }
+    dexOptions {
+        javaMaxHeapSize "4g"
     }
     // used by Room, to test migrations
     sourceSets {
