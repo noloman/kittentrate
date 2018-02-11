@@ -3,7 +3,6 @@ package kittentrate;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.StrictMode;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
@@ -13,6 +12,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
 import android.view.MenuItem;
 
 import com.crashlytics.android.Crashlytics;
@@ -58,7 +58,7 @@ public class MainActivity extends AppCompatActivity implements Navigator {
         setupDrawerContent(navigationView);
         Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragment_content);
         if (fragment == null) {
-            loadFragment(GameFragment.newInstance(), navigationView.getMenu().getItem(0));
+            loadFragment(GameFragment.Companion.newInstance(), navigationView.getMenu().getItem(0));
         }
     }
 
@@ -97,12 +97,9 @@ public class MainActivity extends AppCompatActivity implements Navigator {
     }
 
     private void setupDrawerContent(NavigationView navigationView) {
-        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                selectDrawerItem(item);
-                return true;
-            }
+        navigationView.setNavigationItemSelectedListener(item -> {
+            selectDrawerItem(item);
+            return true;
         });
     }
 
@@ -133,6 +130,12 @@ public class MainActivity extends AppCompatActivity implements Navigator {
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu, menu);
+        return true;
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // The action bar home/up action should open or close the drawer.
         if (drawerToggle.onOptionsItemSelected(item)) {
@@ -150,7 +153,7 @@ public class MainActivity extends AppCompatActivity implements Navigator {
     public void navigateTo(Screen screen) {
         switch (screen) {
             case GAME:
-                loadFragment(GameFragment.newInstance(), navigationView.getMenu().getItem(0));
+                loadFragment(GameFragment.Companion.newInstance(), navigationView.getMenu().getItem(0));
                 break;
             case SCORES:
                 loadFragment(ScoresFragment.newInstance(), navigationView.getMenu().getItem(0));

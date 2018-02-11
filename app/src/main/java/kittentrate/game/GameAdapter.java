@@ -37,10 +37,9 @@ public class GameAdapter extends RecyclerView.Adapter<GameAdapter.CardViewHolder
     }
 
     void setDataCardImages(List<PhotoEntity> entityList) {
+        cardList.clear();
         for (int i = 0; i < entityList.size(); i++) {
-            Card card = new Card();
-            card.setImageCoverUrl(entityList.get(i).getUrl());
-            card.setId(entityList.get(i).getId());
+            Card card = new Card(entityList.get(i).getId(), entityList.get(i).getUrl());
             cardList.add(card);
         }
         notifyDataSetChanged();
@@ -67,14 +66,11 @@ public class GameAdapter extends RecyclerView.Adapter<GameAdapter.CardViewHolder
 
         // Return a new holder instance
         final CardViewHolder cardViewHolder = new CardViewHolder(cardView);
-        cardView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int pos = cardViewHolder.getAdapterPosition();
-                if (pos != NO_POSITION) {
-                    Card card = cardList.get(pos);
-                    onItemClickListener.onItemClick(pos, card, cardViewHolder.viewFlipper);
-                }
+        cardView.setOnClickListener(v -> {
+            int pos = cardViewHolder.getAdapterPosition();
+            if (pos != NO_POSITION) {
+                Card card = cardList.get(pos);
+                onItemClickListener.onItemClick(pos, card, cardViewHolder.viewFlipper);
             }
         });
         return cardViewHolder;

@@ -12,17 +12,22 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import io.reactivex.Observable;
 import kittentrate.data.repository.GameDataSource;
-import kittentrate.data.rest.NetworkCallback;
 import kittentrate.score.PlayerScore;
 import kittentrate.utils.Constants;
 
 /**
  * Created by Manuel Lorenzo
  */
-public class GameLocalDataSource implements GameDataSource {
-    private SQLiteDatabase sqLiteDatabase;
+public class GameLocalDataSource implements GameDataSource.LocalDataSource {
     private static GameLocalDataSource gameLocalDataSource;
+    private SQLiteDatabase sqLiteDatabase;
+
+    private GameLocalDataSource(Context context) {
+        GameDbHelper gameDbHelper = new GameDbHelper(context);
+        sqLiteDatabase = gameDbHelper.getWritableDatabase();
+    }
 
     public static GameLocalDataSource getInstance(Context context) {
         if (gameLocalDataSource == null) {
@@ -31,18 +36,12 @@ public class GameLocalDataSource implements GameDataSource {
         return gameLocalDataSource;
     }
 
-    private GameLocalDataSource(Context context) {
-        GameDbHelper gameDbHelper = new GameDbHelper(context);
-        sqLiteDatabase = gameDbHelper.getWritableDatabase();
+    static void destroyInstance() {
+        gameLocalDataSource = null;
     }
 
     @Override
-    public void getPhotos(NetworkCallback networkCallback) {
-        throw new UnsupportedOperationException("Operation not supported");
-    }
-
-    @Override
-    public List<PlayerScore> getTopScores() {
+    public Observable<List<PlayerScore>> getTopScores() {
         String[] projection = {
                 GameScoreDbContract.ScoreEntry._ID,
                 GameScoreDbContract.ScoreEntry.COLUMN_NAME_PLAYER_NAME,
@@ -51,7 +50,7 @@ public class GameLocalDataSource implements GameDataSource {
 
         Cursor c = sqLiteDatabase.query(GameScoreDbContract.ScoreEntry.TABLE_NAME, projection, null, null, null, null, GameScoreDbContract.ScoreEntry.COLUMN_NAME_SCORE + " DESC");
 
-        ArrayList<PlayerScore> topScoresList = new ArrayList<>(Constants.NUMBER_TOP_SCORES);
+        List<PlayerScore> topScoresList = new ArrayList<>(Constants.NUMBER_TOP_SCORES);
         if (c != null && c.getCount() > 0) {
             while (c.moveToNext()) {
                 int score = c.getInt(c.getColumnIndexOrThrow(GameScoreDbContract.ScoreEntry.COLUMN_NAME_SCORE));
@@ -66,7 +65,7 @@ public class GameLocalDataSource implements GameDataSource {
             c.close();
         }
 
-        return topScoresList;
+        return Observable.just(topScoresList);
     }
 
     @Override
@@ -87,9 +86,5 @@ public class GameLocalDataSource implements GameDataSource {
     @Override
     public void deleteAllScores() {
         sqLiteDatabase.delete(GameScoreDbContract.ScoreEntry.TABLE_NAME, null, null);
-    }
-
-    static void destroyInstance() {
-        gameLocalDataSource = null;
     }
 }

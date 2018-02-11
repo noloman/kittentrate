@@ -3,6 +3,7 @@ package kittentrate.score;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -16,22 +17,21 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import kittentrate.MainActivity;
 import kittentrate.data.di.Injection;
-import kittentrate.data.repository.model.PhotoEntity;
 import kittentrate.data.repository.GameRepository;
-import kittentrate.data.rest.NetworkCallback;
+import kittentrate.navigation.Screen;
 import manulorenzo.me.kittentrate.R;
 
-/**
- * A placeholder fragment containing a simple view.
- */
-public class ScoresFragment extends Fragment implements ScoresContract.View, NetworkCallback {
+public class ScoresFragment extends Fragment implements ScoresContract.View, View.OnClickListener {
     @BindView(R.id.scores_recyclerview)
     RecyclerView recyclerView;
     @BindView(R.id.scores_layout)
     LinearLayout scoresLayout;
     @BindView(R.id.empty_textview)
     TextView emptyTextView;
+    @BindView(R.id.scores_fab)
+    FloatingActionButton scoresFab;
     private ScoresAdapter scoresAdapter;
 
     public ScoresFragment() {
@@ -47,6 +47,7 @@ public class ScoresFragment extends Fragment implements ScoresContract.View, Net
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        setHasOptionsMenu(false);
         View view = inflater.inflate(R.layout.scores_fragment, container, false);
         ButterKnife.bind(this, view);
         return view;
@@ -59,6 +60,7 @@ public class ScoresFragment extends Fragment implements ScoresContract.View, Net
             scoresAdapter = new ScoresAdapter();
             recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         }
+        scoresFab.setOnClickListener(this);
     }
 
     @Override
@@ -66,11 +68,9 @@ public class ScoresFragment extends Fragment implements ScoresContract.View, Net
         super.onCreate(savedInstanceState);
 
         Context applicationContext = getContext().getApplicationContext();
-
         GameRepository gameRepository = Injection.provideRepository(applicationContext);
 
-        ScoresLoader scoresLoader = new ScoresLoader(applicationContext, gameRepository);
-        ScoresPresenter scoresPresenter = new ScoresPresenter(this, scoresLoader, getLoaderManager());
+        ScoresPresenter scoresPresenter = new ScoresPresenter(this, gameRepository);
         scoresPresenter.start();
     }
 
@@ -91,12 +91,7 @@ public class ScoresFragment extends Fragment implements ScoresContract.View, Net
     }
 
     @Override
-    public void onSuccess(List<PhotoEntity> success) {
-        throw new UnsupportedOperationException("Unsupported");
-    }
-
-    @Override
-    public void onFailure(Throwable t) {
-        throw new UnsupportedOperationException("Unsupported");
+    public void onClick(View v) {
+        ((MainActivity) getActivity()).navigateTo(Screen.GAME);
     }
 }
