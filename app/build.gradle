@@ -1,6 +1,7 @@
 buildscript {
     repositories {
         maven { url 'https://maven.fabric.io/public' }
+        maven { url "https://maven.google.com" }
     }
 
     dependencies {
@@ -8,41 +9,62 @@ buildscript {
     }
 }
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
 apply plugin: 'io.fabric'
+apply plugin: 'kotlin-kapt'
 
 repositories {
     maven { url 'https://maven.fabric.io/public' }
-}
-
-apply plugin: 'io.fabric'
-
-repositories {
-    maven { url 'https://maven.fabric.io/public' }
+    mavenCentral()
 }
 
 def keystorePropertiesFile = rootProject.file("keystore.properties")
 def keystoreProperties = new Properties()
-keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+if (keystorePropertiesFile.exists() && keystorePropertiesFile.canRead()) {
+    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+}
 
 android {
     signingConfigs {
-        kittentrate {
-            keyAlias keystoreProperties['keyAlias']
-            keyPassword keystoreProperties['keyPassword']
-            storeFile file(keystoreProperties['storeFile'])
-            storePassword keystoreProperties['storePassword']
-        }
+        release
     }
-    compileSdkVersion 25
-    buildToolsVersion "25.0.2"
+    compileSdkVersion 27
+    buildToolsVersion '27.0.3'
     defaultConfig {
         applicationId "manulorenzo.me.kittentrate"
         minSdkVersion 15
-        targetSdkVersion 25
+        targetSdkVersion 27
         versionCode 2
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
+
+        // used by Room, to test migrations
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = ["room.schemaLocation":
+                                     "$projectDir/schemas".toString()]
+            }
+        }
+        if (keystorePropertiesFile != null &&
+                keystorePropertiesFile.canRead() &&
+                keystoreProperties.containsKey("fabricApiKeyValue")) {
+            buildConfigField "String", "FLICKR_API_KEY", keystoreProperties["FlickrApiKey"]
+        } else {
+            buildConfigField "String", "FLICKR_API_KEY", System.getenv("FlickrApiKey")
+        }
+    }
+    dexOptions {
+        javaMaxHeapSize "4g"
+    }
+    // used by Room, to test migrations
+    sourceSets {
+        androidTest.assets.srcDirs +=
+                files("$projectDir/schemas".toString())
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
     lintOptions {
         abortOnError false
@@ -55,58 +77,133 @@ android {
         release {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.kittentrate
+            signingConfig signingConfigs.release
         }
     }
+
+    flavorDimensions "mode"
     productFlavors {
         mock {
+            dimension "mode"
             applicationIdSuffix ".mock"
-            manifestPlaceholders = [fabricApiKeyValue: keystoreProperties["fabricApiKeyValue"]]
+            if (keystorePropertiesFile != null
+                    && keystorePropertiesFile.canRead() &&
+                    keystoreProperties.containsKey("fabricApiKeyValue")) {
+                manifestPlaceholders = [fabricApiKeyValue: keystoreProperties["fabricApiKeyValue"]]
+            } else {
+                manifestPlaceholders = [fabricApiKeyValue: System.getenv("fabricApiKeyValue")]
+            }
         }
         prod {
-            manifestPlaceholders = [fabricApiKeyValue: keystoreProperties["fabricApiKeyValue"]]
+            dimension "mode"
+            if (keystorePropertiesFile != null &&
+                    keystorePropertiesFile.canRead() &&
+                    keystoreProperties.containsKey("fabricApiKeyValue")) {
+                manifestPlaceholders = [fabricApiKeyValue: keystoreProperties["fabricApiKeyValue"]]
+            } else {
+                manifestPlaceholders = [fabricApiKeyValue: System.getenv("fabricApiKeyValue")]
+            }
         }
-    }
-    buildTypes.each {
-        it.buildConfigField 'String', 'FLICKR_API_KEY', keystoreProperties['FlickrApiKey']
-    }
-    compileOptions {
     }
 }
 
-dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+if (keystorePropertiesFile != null
+        && keystorePropertiesFile.canRead()
+        && keystoreProperties.containsKey('keyAlias')
+        && keystoreProperties.containsKey('keyPassword')
+        && keystoreProperties.containsKey('storeFile')
+        && keystoreProperties.containsKey('storePassword')) {
+    android.signingConfigs.release.keyAlias keystoreProperties['keyAlias']
+    android.signingConfigs.release.keyPassword keystoreProperties['keyPassword']
+    android.signingConfigs.release.storeFile file(keystoreProperties['storeFile'])
+    android.signingConfigs.release.storePassword keystoreProperties['storePassword']
+} else if (keystorePropertiesFile != null
+        && keystorePropertiesFile.canRead()
+        && keystoreProperties.containsKey('BITRISEIO_ANDROID_KEYSTORE_ALIAS')
+        && keystoreProperties.containsKey('BITRISEIO_ANDROID_KEYSTORE_PRIVATE_KEY_PASSWORD')
+        && keystoreProperties.containsKey('$BITRISEIO_ANDROID_KEYSTORE_PASSWORD')) {
+    keyAlias System.getenv("BITRISEIO_ANDROID_KEYSTORE_ALIAS")
+    keyPassword System.getenv("BITRISEIO_ANDROID_KEYSTORE_PRIVATE_KEY_PASSWORD")
+    storeFile file(System.getenv("HOME") + "/keystores/my_keystore.jks")
+    storePassword System.getenv("BITRISEIO_ANDROID_KEYSTORE_PASSWORD")
+} else {
+    android.signingConfigs.release.keyAlias System.getenv("keyAlias")
+    android.signingConfigs.release.keyPassword System.getenv("keyPassword")
+    android.signingConfigs.release.storePassword System.getenv("storePassword")
+}
 
-    androidTestCompile("com.android.support.test.espresso:espresso-core:$espressoVersion", {
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    androidTestImplementation("com.android.support.test.espresso:espresso-core:$espressoVersion", {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    compile "com.android.support:recyclerview-v7:$androidSupportLibraryVersion"
-    compile "com.android.support:cardview-v7:$androidSupportLibraryVersion"
-    compile "com.android.support:appcompat-v7:$androidSupportLibraryVersion"
-    compile "com.android.support:design:$androidSupportLibraryVersion"
-    compile "com.android.support:support-v4:$androidSupportLibraryVersion"
-    compile "com.android.support:design:$androidSupportLibraryVersion"
-    compile "com.android.support:recyclerview-v7:$androidSupportLibraryVersion"
-    compile "com.github.bumptech.glide:glide:$glideVersion"
+    androidTestImplementation('com.android.support.test:runner:0.5') {
+        // Necessary if your app targets Marshmallow (since the test runner
+        // hasn't moved to Marshmallow yet)
+        exclude group: 'com.android.support', module: 'support-annotations'
+    }
+    androidTestImplementation('com.android.support.test.espresso:espresso-contrib:2.2') {
+        // Necessary to avoid version conflicts
+        exclude group: 'com.android.support', module: 'appcompat'
+        exclude group: 'com.android.support', module: 'support-v4'
+        exclude group: 'com.android.support', module: 'support-annotations'
+        exclude module: 'recyclerview-v7'
+    }
+    implementation "com.android.support:recyclerview-v7:$androidSupportLibraryVersion"
+    implementation "com.android.support:cardview-v7:$androidSupportLibraryVersion"
+    implementation "com.android.support:appcompat-v7:$androidSupportLibraryVersion"
+    implementation "com.android.support:design:$androidSupportLibraryVersion"
+    implementation "com.android.support:support-v4:$androidSupportLibraryVersion"
+    implementation "com.android.support:design:$androidSupportLibraryVersion"
+    implementation "com.android.support:recyclerview-v7:$androidSupportLibraryVersion"
+    implementation "com.github.bumptech.glide:glide:$glideVersion"
+    implementation "io.reactivex.rxjava2:rxjava:$rxJavaVersion"
+    implementation "io.reactivex.rxjava2:rxandroid:$rxAndroidVersion"
 
-    compile "com.jakewharton:butterknife:$butterknifeVersion"
+    implementation "com.jakewharton:butterknife:$butterknifeVersion"
     annotationProcessor "com.jakewharton:butterknife-compiler:$butterknifeVersion"
+    kapt "com.jakewharton:butterknife-compiler:$butterknifeVersion"
 
-    compile "com.google.code.gson:gson:$gsonVersion"
-    compile "com.squareup.retrofit2:retrofit:$retrofitVersion"
-    compile "com.squareup.retrofit2:converter-gson:$retrofitVersion"
-    compile "com.squareup.okhttp3:logging-interceptor:$squareLoggingInterceptorVersion"
+    implementation "com.google.code.gson:gson:$gsonVersion"
+    implementation "com.squareup.retrofit2:retrofit:$retrofitVersion"
+    implementation "com.squareup.retrofit2:converter-gson:$retrofitVersion"
+    implementation 'com.jakewharton.retrofit:retrofit2-rxjava2-adapter:1.0.0'
+    implementation "com.squareup.okhttp3:logging-interceptor:$squareLoggingInterceptorVersion"
 
-    debugCompile "com.squareup.leakcanary:leakcanary-android:$leakCanaryVersion"
-    testCompile "com.squareup.leakcanary:leakcanary-android:$leakCanaryVersion"
-    releaseCompile "com.squareup.leakcanary:leakcanary-android-no-op:$leakCanaryVersion"
+    debugImplementation "com.squareup.leakcanary:leakcanary-android:$leakCanaryVersion"
+    testImplementation "com.squareup.leakcanary:leakcanary-android:$leakCanaryVersion"
+    testImplementation "org.robolectric:robolectric:$robolectricVersion"
+    androidTestImplementation "org.robolectric:robolectric:$robolectricVersion"
+    releaseImplementation "com.squareup.leakcanary:leakcanary-android-no-op:$leakCanaryVersion"
 
-    compile("com.crashlytics.sdk.android:crashlytics:$crashlyticsVersion@aar") {
+    // Room
+    implementation "android.arch.persistence.room:runtime:$roomVersion"
+    annotationProcessor "android.arch.persistence.room:compiler:$roomVersion"
+    kapt "android.arch.persistence.room:compiler:$roomVersion"
+    androidTestImplementation "android.arch.persistence.room:testing:$roomVersion"
+    implementation "android.arch.persistence.room:rxjava2:$roomVersion"
+
+    // Lifecycles
+    implementation "android.arch.lifecycle:runtime:$lifecycleVersion"
+    // not necessary if you are using lifecycle:extensions or lifecycle:common-java8
+    annotationProcessor "android.arch.lifecycle:compiler:$lifecycleVersion"
+    kapt "android.arch.lifecycle:compiler:$lifecycleVersion"
+    // not needed if you are using the DefaultLifecycleObserver from common-java8 artifact.
+    implementation "android.arch.lifecycle:common-java8:$lifecycleVersion"
+
+    // LiveModel and DataModel
+    implementation "android.arch.lifecycle:extensions:$lifecycleVersion"
+    testImplementation "android.arch.core:core-testing:$lifecycleVersion"
+    implementation "android.arch.lifecycle:reactivestreams:$lifecycleVersion"
+
+    implementation("com.crashlytics.sdk.android:crashlytics:$crashlyticsVersion@aar") {
         transitive = true
     }
 
-    testCompile "junit:junit:$jUnitVersion"
-    testCompile "org.mockito:mockito-core:$mockitoVersion"
+    testImplementation "junit:junit:$jUnitVersion"
+    testImplementation "com.nhaarman:mockito-kotlin:$mockitoKotlinVersion"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlinVersion"
 }
 
 configurations.all {

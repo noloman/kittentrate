@@ -1,5 +1,6 @@
 package kittentrate.game;
 
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.graphics.Point;
 import android.os.Bundle;
@@ -18,8 +19,8 @@ import android.widget.TextView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import manulorenzo.me.kittentrate.R;
 import kittentrate.score.PlayerScore;
+import manulorenzo.me.kittentrate.R;
 
 /**
  * Created by Manuel Lorenzo
@@ -33,17 +34,13 @@ public class NameScoreDialogFragment extends DialogFragment implements DialogInt
     int score;
     private NameScoreKeyListener nameScoreKeyListener;
 
-    public interface NameScoreKeyListener {
-        void onEnterKeyPressed(PlayerScore playerScore);
-    }
-
     public NameScoreDialogFragment() {
 
     }
 
     public static NameScoreDialogFragment newInstance(int score) {
         Bundle args = new Bundle();
-        args.putInt(GameFragment.SCORE_BUNDLE_KEY, score);
+        args.putInt(GameFragment.Companion.getSCORE_BUNDLE_KEY(), score);
         NameScoreDialogFragment fragment = new NameScoreDialogFragment();
         fragment.setArguments(args);
         return fragment;
@@ -58,8 +55,8 @@ public class NameScoreDialogFragment extends DialogFragment implements DialogInt
             throw new ClassCastException(getTargetFragment().toString() + " must implement NameScoreKeyListener");
         }
         setStyle(DialogFragment.STYLE_NORMAL, R.style.AppTheme_ScoreDialog);
-        if (getArguments() != null && getArguments().getInt(GameFragment.SCORE_BUNDLE_KEY, 0) != 0) {
-            score = getArguments().getInt(GameFragment.SCORE_BUNDLE_KEY);
+        if (getArguments() != null && getArguments().getInt(GameFragment.Companion.getSCORE_BUNDLE_KEY(), 0) != 0) {
+            score = getArguments().getInt(GameFragment.Companion.getSCORE_BUNDLE_KEY());
         }
     }
 
@@ -75,11 +72,22 @@ public class NameScoreDialogFragment extends DialogFragment implements DialogInt
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        setStyle(DialogFragment.STYLE_NORMAL, R.style.AppTheme_ScoreDialog);
+        //setStyle(DialogFragment.STYLE_NORMAL, R.style.AppTheme_ScoreDialog);
         scoreTextView.setText(String.valueOf(score));
 
         nameEditText.requestFocus();
         getDialog().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        Dialog dialog = getDialog();
+        if (dialog != null) {
+            int width = ViewGroup.LayoutParams.MATCH_PARENT;
+            int height = ViewGroup.LayoutParams.MATCH_PARENT;
+            dialog.getWindow().setLayout(width, height);
+        }
     }
 
     public void onResume() {
@@ -110,5 +118,9 @@ public class NameScoreDialogFragment extends DialogFragment implements DialogInt
                 return true;
         }
         return false;
+    }
+
+    public interface NameScoreKeyListener {
+        void onEnterKeyPressed(PlayerScore playerScore);
     }
 }
