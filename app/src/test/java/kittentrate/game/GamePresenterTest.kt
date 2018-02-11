@@ -3,20 +3,24 @@ package kittentrate.game
 import com.nhaarman.mockito_kotlin.isA
 import com.nhaarman.mockito_kotlin.whenever
 import io.reactivex.Observable
+import kittentrate.RobolectricTestHelper
 import kittentrate.data.repository.GameRepository
 import kittentrate.data.repository.model.PhotoEntity
 import kittentrate.data.viewmodel.NetworkViewState
 import org.junit.Before
 import org.junit.Test
+import org.junit.runner.RunWith
 import org.mockito.ArgumentMatchers.eq
 import org.mockito.Mock
 import org.mockito.Mockito.verify
 import org.mockito.MockitoAnnotations
+import org.robolectric.RobolectricTestRunner
 
 /**
  * Created by Manuel Lorenzo
  */
-class GamePresenterTest {
+@RunWith(RobolectricTestRunner::class)
+class GamePresenterTest : RobolectricTestHelper() {
     @Mock
     private lateinit var view: GameContract.View
     @Mock

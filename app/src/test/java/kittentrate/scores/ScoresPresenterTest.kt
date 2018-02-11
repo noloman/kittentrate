@@ -1,5 +1,6 @@
 package kittentrate.scores
 
+import kittentrate.RobolectricTestHelper
 import kittentrate.data.repository.GameRepository
 import kittentrate.score.ScoresContract
 import kittentrate.score.ScoresPresenter
@@ -9,13 +10,13 @@ import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.mockito.Mockito.verify
 import org.mockito.MockitoAnnotations
-import org.mockito.junit.MockitoJUnitRunner
+import org.robolectric.RobolectricTestRunner
 
 /**
  * Created by Manuel Lorenzo
  */
-@RunWith(MockitoJUnitRunner::class)
-class ScoresPresenterTest {
+@RunWith(RobolectricTestRunner::class)
+class ScoresPresenterTest : RobolectricTestHelper() {
     @Mock
     private lateinit var view: ScoresContract.View
     @Mock

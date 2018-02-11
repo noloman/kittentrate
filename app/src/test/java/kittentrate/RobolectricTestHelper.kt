@@ -18,7 +18,7 @@ import org.robolectric.annotation.Config
 @RunWith(RobolectricTestRunner::class)
 @Config(constants = BuildConfig::class,
         application = RobolectricTestHelper.ApplicationStub::class,
-        sdk = intArrayOf(21))
+        sdk = [21])
 abstract class RobolectricTestHelper {
     fun context(): Context {
         return RuntimeEnvironment.application
