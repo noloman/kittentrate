@@ -10,7 +10,7 @@ buildscript {
         jUnitVersion = '4.12'
         butterknifeVersion = '8.8.1'
         glideVersion = '3.7.0'
-        androidSupportLibraryVersion = "27.0.0"
+        androidSupportLibraryVersion = "27.0.2"
         mockitoVersion = '2.8.9'
         dagger2Version = '2.9'
         espressoVersion = '2.2.2'
