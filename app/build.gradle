@@ -135,6 +135,16 @@ if (keystorePropertiesFile != null
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
+    // Dagger core
+    annotationProcessor "com.google.dagger:dagger-compiler:$daggerVersion"
+    compile "com.google.dagger:dagger:$daggerVersion"
+
+    // Dagger Android
+    annotationProcessor "com.google.dagger:dagger-android-processor:$daggerVersion"
+    compile "com.google.dagger:dagger-android-support:$daggerVersion"
+    // if you are not using support library, include this instead
+    //compile "com.google.dagger:dagger-android:$daggerVersion"
+
     androidTestImplementation("com.android.support.test.espresso:espresso-core:$espressoVersion", {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
@@ -160,6 +170,7 @@ dependencies {
     implementation "com.github.bumptech.glide:glide:$glideVersion"
     implementation "io.reactivex.rxjava2:rxjava:$rxJavaVersion"
     implementation "io.reactivex.rxjava2:rxandroid:$rxAndroidVersion"
+    implementation "io.reactivex.rxjava2:rxkotlin:$rxKotlinVersion"
 
     implementation "com.jakewharton:butterknife:$butterknifeVersion"
     annotationProcessor "com.jakewharton:butterknife-compiler:$butterknifeVersion"
@@ -171,11 +182,13 @@ dependencies {
     implementation 'com.jakewharton.retrofit:retrofit2-rxjava2-adapter:1.0.0'
     implementation "com.squareup.okhttp3:logging-interceptor:$squareLoggingInterceptorVersion"
 
+    // LeakCanary
     debugImplementation "com.squareup.leakcanary:leakcanary-android:$leakCanaryVersion"
     testImplementation "com.squareup.leakcanary:leakcanary-android:$leakCanaryVersion"
+    releaseImplementation "com.squareup.leakcanary:leakcanary-android-no-op:$leakCanaryVersion"
+    // Robolectric
     testImplementation "org.robolectric:robolectric:$robolectricVersion"
     androidTestImplementation "org.robolectric:robolectric:$robolectricVersion"
-    releaseImplementation "com.squareup.leakcanary:leakcanary-android-no-op:$leakCanaryVersion"
 
     // Room
     implementation "android.arch.persistence.room:runtime:$roomVersion"
@@ -184,7 +197,7 @@ dependencies {
     androidTestImplementation "android.arch.persistence.room:testing:$roomVersion"
     implementation "android.arch.persistence.room:rxjava2:$roomVersion"
 
-    // Lifecycles
+    // Lifecycle AAC
     implementation "android.arch.lifecycle:runtime:$lifecycleVersion"
     // not necessary if you are using lifecycle:extensions or lifecycle:common-java8
     annotationProcessor "android.arch.lifecycle:compiler:$lifecycleVersion"
@@ -197,11 +210,15 @@ dependencies {
     testImplementation "android.arch.core:core-testing:$lifecycleVersion"
     implementation "android.arch.lifecycle:reactivestreams:$lifecycleVersion"
 
+    // Crashlytics
     implementation("com.crashlytics.sdk.android:crashlytics:$crashlyticsVersion@aar") {
         transitive = true
     }
 
+    // junit
     testImplementation "junit:junit:$jUnitVersion"
+
+    // Mockito Kotlin
     testImplementation "com.nhaarman:mockito-kotlin:$mockitoKotlinVersion"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlinVersion"
 }

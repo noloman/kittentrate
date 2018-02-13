@@ -4,7 +4,7 @@ import android.app.Application
 import android.arch.persistence.room.Room
 
 import com.squareup.leakcanary.LeakCanary
-import kittentrate.data.repository.local.KittentrateScoresDatabase
+import kittentrate.db.Database
 
 /**
  * Created by Manuel Lorenzo
@@ -12,7 +12,7 @@ import kittentrate.data.repository.local.KittentrateScoresDatabase
 
 class GameApplication : Application() {
     companion object {
-        lateinit var database: KittentrateScoresDatabase
+        lateinit var database: Database
     }
 
     override fun onCreate() {
@@ -25,8 +25,8 @@ class GameApplication : Application() {
         LeakCanary.install(this)
         // Normal app init code...}
         database = Room.databaseBuilder(this,
-                KittentrateScoresDatabase::class.java,
-                "KittentrateScoresDatabase")
+                Database::class.java,
+                "Database")
                 .build()
     }
 }

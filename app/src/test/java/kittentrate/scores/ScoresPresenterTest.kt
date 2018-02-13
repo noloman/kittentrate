@@ -1,9 +1,8 @@
 package kittentrate.scores
 
 import kittentrate.RobolectricTestHelper
-import kittentrate.data.repository.GameRepository
-import kittentrate.score.ScoresContract
-import kittentrate.score.ScoresPresenter
+import kittentrate.repository.Repository
+import kittentrate.ui.score.ScoresContract
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -20,7 +19,7 @@ class ScoresPresenterTest : RobolectricTestHelper() {
     @Mock
     private lateinit var view: ScoresContract.View
     @Mock
-    private lateinit var repository: GameRepository
+    private lateinit var repository: Repository
 
     private lateinit var scoresPresenter: ScoresPresenter
 

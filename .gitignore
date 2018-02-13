@@ -136,6 +136,15 @@ gradle-app.setting
 # End of https://www.gitignore.io/api/android,gradle,intellij
 
 
+# Created by https://www.gitignore.io/api/firebase
+
+### Firebase ###
+.idea
+**/node_modules/*
+**/.firebaserc
+
+# End of https://www.gitignore.io/api/firebase
+
 *.iml
 .gradle
 /local.properties
@@ -146,3 +155,21 @@ gradle-app.setting
 /build
 /captures
 .externalNativeBuild
+.idea/caches/
+.idea/codeStyles/
+app/libs/
+app/sampledata/
+app/schemas/
+app/src/androidTest/java/kittentrate/data/local/
+app/src/androidTest/java/manulorenzo/me/kittentrate/RepositoryInstrumentedTest.kt
+app/src/main/java/kittentrate/api/NetworkDataSourceImpl.kt
+app/src/main/java/kittentrate/data/model/
+app/src/main/java/kittentrate/data/viewmodel/factory/
+app/src/main/java/kittentrate/db/Database.kt
+app/src/main/java/kittentrate/repository/Repository.kt
+app/src/main/java/kittentrate/ui/
+app/src/prod/java/kittentrate/di/
+app/src/test/java/kittentrate/data/repository/RepositoryTest.kt
+app/src/test/java/kittentrate/ui/
+projectFilesBackup/
+projectFilesBackup1/

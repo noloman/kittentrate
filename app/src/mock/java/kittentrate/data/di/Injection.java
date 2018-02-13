@@ -1,12 +1,12 @@
-package kittentrate.data.di;
+package kittentrate.di;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
 
-import kittentrate.data.preferences.SharedPreferencesManager;
+import kittentrate.data.preferences.SharedPreferencesDataSourceImpl;
 import kittentrate.data.repository.GameRepository;
-import kittentrate.data.repository.local.GameLocalDataSource;
-import kittentrate.data.repository.remote.GameRemoteDataSource;
+import kittentrate.data.local.GameLocalDataSource;
+import kittentrate.data.remote.GameRemoteDataSource;
 
 /**
  * Created by manu on 04/04/2017.

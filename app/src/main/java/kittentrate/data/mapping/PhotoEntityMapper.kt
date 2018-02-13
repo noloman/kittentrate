@@ -1,7 +1,7 @@
 package kittentrate.data.mapping
 
-import kittentrate.data.repository.model.Photo
-import kittentrate.data.repository.model.PhotoEntity
+import kittentrate.data.model.Photo
+import kittentrate.data.model.PhotoEntity
 import kittentrate.utils.Constants
 import java.util.*
 
@@ -10,7 +10,7 @@ import java.util.*
  */
 
 class PhotoEntityMapper : PhotoEntityMapperInterface {
-    override fun transform(photoCollection: List<Photo>): List<PhotoEntity> {
+    override fun mapToEntity(photoCollection: List<Photo>): List<PhotoEntity> {
         val photoEntityArrayList = ArrayList<PhotoEntity>()
         var count = 0
         val it = photoCollection.iterator()

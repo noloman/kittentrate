@@ -1,9 +1,8 @@
 package kittentrate.data.domain
 
 import kittentrate.RobolectricTestHelper
-import kittentrate.game.Card
-import kittentrate.game.GameManager
-import kittentrate.game.GamePresenter
+import kittentrate.ui.game.Card
+import kittentrate.ui.game.GameManager
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
