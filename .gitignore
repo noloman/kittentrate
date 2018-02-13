@@ -227,3 +227,5 @@ cmake-build-debug/
 
 
 # End of https://www.gitignore.io/api/android,intellij,firebase,crashlytics,androidstudio
+# Also ignoring secrets
+/keystore.properties
