@@ -166,11 +166,16 @@ public class MainActivity extends AppCompatActivity implements Navigator {
     private void setStrictMode() {
         if (BuildConfig.DEBUG) {
             StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder()
-                    .detectAll()
+                    .detectNetwork()
+                    .detectCustomSlowCalls()
+                    .detectDiskReads()
+                    .detectDiskWrites()
+                    .detectNetwork()
                     .penaltyLog()
                     .build());
             StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder()
-                    .detectAll()
+                    .detectActivityLeaks()
+                    .detectLeakedClosableObjects()
                     .penaltyLog()
                     .penaltyDeath()
                     .build());

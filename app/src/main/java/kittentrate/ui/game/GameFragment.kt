@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.app.ProgressDialog
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
-import android.os.Handler
 import android.support.v4.app.Fragment
 import android.support.v7.app.AlertDialog
 import android.view.LayoutInflater
@@ -15,41 +14,48 @@ import android.widget.TextView
 import android.widget.ViewFlipper
 import butterknife.BindView
 import butterknife.ButterKnife
-import io.reactivex.rxkotlin.subscribeBy
 import kittentrate.data.model.PhotoEntity
 import kittentrate.data.viewmodel.GameViewModel
 import kittentrate.data.viewmodel.NetworkViewState
-import kittentrate.data.viewmodel.factory.RemoteViewModelFactory
 import kittentrate.ui.MainActivity
 import kittentrate.ui.navigation.Screen
 import kittentrate.ui.score.PlayerScore
 import kittentrate.ui.view.custom.AutofitRecyclerView
-import kittentrate.utils.Constants
 import manulorenzo.me.kittentrate.R
-import java.util.*
 import kotlin.properties.Delegates
 
-class GameFragment : Fragment(),
-        GameContract.View,
-        GameAdapter.OnItemClickListener,
+/**
+ * Copyright 2018 Manuel Lorenzo
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+class GameFragment : Fragment(), GameAdapter.OnItemClickListener,
         NameScoreDialogFragment.NameScoreKeyListener {
     @BindView(R.id.floating_textview)
     internal lateinit var floatingTextView: TextView
     @BindView(R.id.recycler_view)
     internal lateinit var autofitRecyclerView: AutofitRecyclerView
     private lateinit var gameAdapter: GameAdapter
-    private val viewFlipperCardWeakHashMap = WeakHashMap<ViewFlipper, Card>(Constants.NUMBER_MATCHING_CARDS)
     private lateinit var loadingDialog: ProgressDialog
     private lateinit var gameViewModel: GameViewModel
 
-    override var networkViewState: NetworkViewState by Delegates.observable<NetworkViewState>(
+    private var networkViewState: NetworkViewState by Delegates.observable<NetworkViewState>(
             NetworkViewState.None(),
             { _, _, newValue ->
                 when (newValue) {
                     is NetworkViewState.Loading -> showLoadingView()
                     is NetworkViewState.Success<*> -> {
                         hideLoadingView()
-                        setAdapterData(newValue.item as List<PhotoEntity>)
                     }
                     is NetworkViewState.Error -> showErrorView()
                 }
@@ -62,19 +68,22 @@ class GameFragment : Fragment(),
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         // TODO NO! Blocking first
-        outState.putInt(SCORE_BUNDLE_KEY, gameViewModel.gameScore.blockingFirst())
+        val bla: Game? = gameViewModel.gameMutableLiveData.value
+        if (bla?.score != null) {
+            outState.putInt(SCORE_BUNDLE_KEY, bla.score)
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        retainInstance = true
         setHasOptionsMenu(true)
-
-        val remoteViewModelFactory = RemoteViewModelFactory()
-        gameViewModel = ViewModelProviders.of(this, remoteViewModelFactory).get(GameViewModel::class.java)
+        gameAdapter = GameAdapter(this)
+        gameViewModel = ViewModelProviders.of(this).get(GameViewModel::class.java)
         gameViewModel.networkViewStateMutableLiveData.observe(this,
                 android.arch.lifecycle.Observer { networkViewState: NetworkViewState? ->
-                    networkViewState?.let { it -> this@GameFragment.networkViewState = it }
+                    networkViewState?.let { it ->
+                        this@GameFragment.networkViewState = it
+                    }
                 }
         )
     }
@@ -103,17 +112,24 @@ class GameFragment : Fragment(),
             val score = savedInstanceState.getInt(SCORE_BUNDLE_KEY)
             floatingTextView.text = Integer.toString(score)
         }
+        gameViewModel.photosMutableLiveData.observeForever({
+            it?.let { it1 ->
+                setAdapterData(it1)
+            }
+        })
+        // We first fetch the photos
+        gameViewModel.getPhotos()
     }
 
     override fun onItemClick(position: Int, card: Card, viewFlipper: ViewFlipper) {
-        if (shouldDispatchTouchEvent() && !viewFlipperCardWeakHashMap.containsKey(viewFlipper)) {
+        if (shouldDispatchTouchEvent() && !gameViewModel.viewFlipperCardWeakHashMap.containsKey(viewFlipper)) {
             viewFlipper.showNext()
-            viewFlipperCardWeakHashMap[viewFlipper] = card
+            gameViewModel.viewFlipperCardWeakHashMap[viewFlipper] = card
             gameViewModel.cardFlipped(position, card)
         }
     }
 
-    override fun showLoadingView() {
+    private fun showLoadingView() {
         loadingDialog = ProgressDialog(context)
         loadingDialog.setCancelable(false)
         loadingDialog.setTitle(getString(R.string.progress_dialog_loading_images_title))
@@ -121,62 +137,54 @@ class GameFragment : Fragment(),
         loadingDialog.show()
     }
 
-    override fun hideLoadingView() {
+    private fun hideLoadingView() {
         loadingDialog.dismiss()
     }
 
-    override fun turnCardsOver() {
-        Handler().postDelayed({ gameViewModel.removeCardsFromMaps() }, Constants.ROTATION_TIME.toLong())
-        removeViewFlipper()
-    }
-
-    override fun notifyAdapterItemChanged(pos: Int) {
+    fun notifyAdapterItemChanged(pos: Int) {
         gameAdapter.notifyItemChanged(pos)
     }
 
-    override fun notifyAdapterItemRemoved(id: String) {
-        gameAdapter.removeItem(id)
+    fun notifyAdapterItemRemoved(id: String) {
+        // gameAdapter.removeItem(id)
     }
 
-    override fun setAdapterData(photoEntityList: List<PhotoEntity>) {
+    private fun setAdapterData(photoEntityList: List<PhotoEntity>) {
         gameAdapter.setDataCardImages(photoEntityList)
+        // TODO ugliest thing ever: we want to listen to the score changes until the adapter is initialized with the newest pictures
+        gameViewModel.gameMutableLiveData.observeForever({ it -> it?.let { it1 -> onScoreChanged(it1) } })
     }
 
-    override fun removeViewFlipper() {
-        for (viewFlipper in viewFlipperCardWeakHashMap.keys) {
+    fun removeViewFlipper() {
+        for (viewFlipper in gameViewModel.viewFlipperCardWeakHashMap.keys) {
             viewFlipper.showPrevious()
         }
-        viewFlipperCardWeakHashMap.clear()
+        gameViewModel.viewFlipperCardWeakHashMap.clear()
     }
 
-    override fun showErrorView() {
+    private fun showErrorView() {
         val alertDialogBuilder = activity?.let { AlertDialog.Builder(it) }
         alertDialogBuilder?.setTitle("There was an unexpected error")?.setMessage("Please try again")?.show()
     }
 
-    override fun checkGameFinished() {
+    private fun checkGameFinished() {
         if (gameAdapter.itemCount == 0) {
-            // TODO Blocking first
-            showScoreFragmentDialog(gameViewModel.gameScore.blockingFirst())
+            val bla: Game? = gameViewModel.gameMutableLiveData.value
+            if (bla != null) {
+                showScoreFragmentDialog(bla.score)
+            }
         }
     }
 
-    override fun shouldDispatchTouchEvent(): Boolean = gameViewModel.shouldDispatchTouchEvent()
+    private fun shouldDispatchTouchEvent(): Boolean = gameViewModel.shouldDispatchTouchEvent()
 
-    override fun onScoreChanged(gameScore: Int) {
-        floatingTextView.text = Integer.toString(gameScore)
+    private fun onScoreChanged(game: Game) {
+        floatingTextView.text = Integer.toString(game.score)
         checkGameFinished()
     }
 
     override fun onEnterKeyPressed(playerScore: PlayerScore) {
         gameViewModel.onScoredEntered(playerScore)
-                .subscribeBy(onNext = { l: Long ->
-                    if (l == -1L) {
-                        // TODO ERROR
-                        networkViewState =
-                                NetworkViewState.Error("score insertion is -1")
-                    }
-                })
         (activity as MainActivity).navigateTo(Screen.SCORES)
     }
 

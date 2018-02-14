@@ -11,7 +11,6 @@ buildscript {
         butterknifeVersion = '8.8.1'
         glideVersion = '3.7.0'
         androidSupportLibraryVersion = "27.0.2"
-        dagger2Version = '2.9'
         espressoVersion = '2.2.2'
         crashlyticsVersion = '2.6.8'
         googleServicesVersion = '3.0.0'

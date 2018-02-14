@@ -3,6 +3,7 @@ package kittentrate.data.mapping
 import kittentrate.data.model.Photo
 import kittentrate.data.model.PhotoEntity
 import kittentrate.utils.Constants
+import manulorenzo.me.kittentrate.BuildConfig
 import java.util.*
 
 /**
@@ -27,7 +28,9 @@ class PhotoEntityMapper : PhotoEntityMapperInterface {
         for (i in 0 until count / (2 * Constants.NUMBER_MATCHING_CARDS)) {
             newPhotoEntityArrayList1.addAll(photoEntityArrayList)
         }
-        Collections.shuffle(newPhotoEntityArrayList1, Random(System.nanoTime()))
+        if (BuildConfig.DEBUG) {
+            Collections.shuffle(newPhotoEntityArrayList1, Random(System.nanoTime()))
+        }
         return newPhotoEntityArrayList1
     }
 }

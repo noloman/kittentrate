@@ -19,7 +19,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import kittentrate.GameApplication;
 import kittentrate.data.viewmodel.ScoresViewModel;
-import kittentrate.data.viewmodel.factory.LocalViewModelFactory;
+import kittentrate.data.viewmodel.factory.ScoresViewModelFactory;
 import kittentrate.ui.MainActivity;
 import kittentrate.ui.navigation.Screen;
 import manulorenzo.me.kittentrate.R;
@@ -69,7 +69,7 @@ public class ScoresFragment extends Fragment implements ScoresContract.View, Vie
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        LocalViewModelFactory viewModelFactory = new LocalViewModelFactory(GameApplication.database.playerScoreDao());
+        ScoresViewModelFactory viewModelFactory = new ScoresViewModelFactory(GameApplication.database.playerScoreDao());
         scoresViewModel = ViewModelProviders.of(this, viewModelFactory).get(ScoresViewModel.class);
         scoresViewModel.getTopScores();
     }

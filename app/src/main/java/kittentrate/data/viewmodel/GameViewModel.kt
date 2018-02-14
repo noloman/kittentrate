@@ -1,12 +1,11 @@
 package kittentrate.data.viewmodel
 
-import android.arch.lifecycle.AndroidViewModel
 import android.arch.lifecycle.MutableLiveData
+import android.arch.lifecycle.ViewModel
+import android.os.Handler
+import android.widget.ViewFlipper
 import io.reactivex.Observable
-import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxkotlin.subscribeBy
-import io.reactivex.schedulers.Schedulers
-import kittentrate.GameApplication
 import kittentrate.data.mapping.PhotoEntityMapper
 import kittentrate.data.model.FlickrPhoto
 import kittentrate.data.model.PhotoEntity
@@ -15,144 +14,161 @@ import kittentrate.ui.game.Card
 import kittentrate.ui.game.Game
 import kittentrate.ui.score.PlayerScore
 import kittentrate.utils.Constants
-import java.util.*
+import java.util.concurrent.ConcurrentHashMap
 
 /**
- * Created by Manuel Lorenzo on 11/02/2018.
+ * Copyright 2018 Manuel Lorenzo
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
-class GameViewModel : AndroidViewModel(GameApplication()) {
+class GameViewModel : ViewModel() {
+    var photosMutableLiveData: MutableLiveData<List<PhotoEntity>> = MutableLiveData()
     val networkViewStateMutableLiveData: MutableLiveData<NetworkViewState> = MutableLiveData()
-    //var score: Observable<Int> by Delegates.observable(gameScore) { _: KProperty<*>, _: Observable<Int>, _: Observable<Int> -> }
-    private val facingUpCardsWeakHashMap = WeakHashMap<Int, Card>(Constants.NUMBER_MATCHING_CARDS)
-    private val gameObservable: Observable<Game> = Observable.just(Game())
 
-    val gameScore: Observable<Int>
-        get() = gameObservable.map { t: Game -> t.score }
+    private val facingUpCardsConcurrentHashMap = ConcurrentHashMap<Int, Card>(Constants.NUMBER_MATCHING_CARDS)
+    val viewFlipperCardWeakHashMap = ConcurrentHashMap<ViewFlipper, Card>(Constants.NUMBER_MATCHING_CARDS)
+
+    var gameMutableLiveData: MutableLiveData<Game> = MutableLiveData()
+
+    init {
+        gameMutableLiveData.value = Game()
+    }
 
     fun cardFlipped(position: Int, card: Card) {
-        if (!facingUpCardsWeakHashMap.containsKey(position)) {
-            facingUpCardsWeakHashMap[position] = card
+        if (!facingUpCardsConcurrentHashMap.containsKey(position)) {
+            facingUpCardsConcurrentHashMap[position] = card
             if (shouldCheckForCardsMatch()) {
                 // This would be the last card, we should check for matches.
                 val id = card.id
                 var matchFound = true
-                for ((_, loopCard) in facingUpCardsWeakHashMap) {
+                for ((_, loopCard) in facingUpCardsConcurrentHashMap) {
                     if (loopCard.id != id) {
                         matchFound = false
                     }
                 }
                 if (matchFound) {
+                    var itemShouldBeRemoved = false
+                    val itemToBeRemoved = mutableListOf<PhotoEntity>()
                     // Match found; remove MATCHED cards from data set
-                    removeViewFlipper()
-                    for ((_, card1) in facingUpCardsWeakHashMap) {
-                        notifyAdapterItemRemoved(card1.id)
+                    for ((_, facingUpCard) in facingUpCardsConcurrentHashMap.asIterable()) {
+                        val newPhotos = photosMutableLiveData.value?.toMutableList()
+                        val it = newPhotos?.iterator()
+                        if (it != null) {
+                            while (it.hasNext()) {
+                                val next = it.next()
+                                if (facingUpCard.id == next.id) {
+                                    itemShouldBeRemoved = true
+                                    itemToBeRemoved.add(next)
+                                }
+                            }
+                        }
                     }
-                    facingUpCardsWeakHashMap.clear()
+                    if (itemShouldBeRemoved) {
+                        photosMutableLiveData.value?.toMutableList().let {
+                            it?.removeAll(itemToBeRemoved)
+                            photosMutableLiveData.postValue(it?.toList())
+                        }
+                    }
+                    facingUpCardsConcurrentHashMap.clear()
                     increaseGameScore()
-                    removeViewFlipper()
                 } else {
                     // Match not found; turn cards over and start from the beginning.
                     decreaseGameScore()
-                    onTurnCardsOver()
+                    turnCardsOver()
                 }
-                //gameViewModel.onGameScoreChanged(gameScore)
             }
         }
     }
 
-    fun removeCardsFromMap() {
-        for ((key) in facingUpCardsWeakHashMap) {
-            notifyAdapterItemChanged(key)
+    private fun resetScore() {
+        val game: Game? = gameMutableLiveData.value
+        if (game != null) {
+            game.score = 0
+            gameMutableLiveData.value = game
         }
-        facingUpCardsWeakHashMap.clear()
-    }
-
-    fun shouldDispatchUiEvent(): Boolean {
-        return facingUpCardsWeakHashMap.size != Constants.NUMBER_MATCHING_CARDS
-    }
-
-    fun resetScore() {
-        resetGameScore()
     }
 
     private fun shouldCheckForCardsMatch(): Boolean {
-        return facingUpCardsWeakHashMap.size == Constants.NUMBER_MATCHING_CARDS
+        return facingUpCardsConcurrentHashMap.size == Constants.NUMBER_MATCHING_CARDS
     }
 
     private fun increaseGameScore() {
-        gameObservable.map { t: Game -> t.score += 1 }
+        val game: Game? = gameMutableLiveData.value
+        if (game != null) {
+            game.score = game.score + 1
+            gameMutableLiveData.value = game
+        }
     }
 
     private fun decreaseGameScore() {
-        gameObservable.map { t: Game -> t.score -= 1 }
-    }
-
-    private fun resetGameScore() {
-        gameObservable.map { t: Game -> t.score = 0 }
+        val game: Game? = gameMutableLiveData.value
+        if (game != null) {
+            game.score = game.score - 1
+            gameMutableLiveData.value = game
+        }
     }
 
     fun getPhotos() {
-        val getPhotosUseCase = Injection.provideGetPhotosUseCase(GameApplication().applicationContext)
         val mapper = PhotoEntityMapper()
-        getPhotosUseCase
+        Injection.provideRepository()
                 .getPhotosWithSavedTag()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .flatMap { t: FlickrPhoto -> Observable.just(mapper.mapToEntity(t.photos.photo)) }
+                .flatMap { t: FlickrPhoto ->
+                    Observable.fromCallable { mapper.mapToEntity(t.photos.photo) }
+                }
+                .doOnSubscribe {
+                    gameMutableLiveData.value = Game()
+                    networkViewStateMutableLiveData.postValue(NetworkViewState.Loading())
+                }
                 .subscribeBy(
-                        onNext = { list: List<PhotoEntity>? ->
-                            networkViewStateMutableLiveData.value = NetworkViewState.Success(list)
+                        onNext = { photoEntityList: List<PhotoEntity>? ->
+                            photosMutableLiveData.postValue(photoEntityList)
+                            networkViewStateMutableLiveData.postValue(NetworkViewState.Success(photoEntityList))
                         },
                         onError = {
-                            networkViewStateMutableLiveData.value = NetworkViewState.Error(it.message)
+                            networkViewStateMutableLiveData.postValue(NetworkViewState.Error(it.message))
                         })
     }
 
     // Presenter methods
     fun onKittensMenuItemClicked() {
-        val repository = Injection.provideRepository(GameApplication().applicationContext)
+        val repository = Injection.provideRepository()
         repository.setPreferencesPhotoTag(Constants.PHOTO_TAG_KITTEN_VALUE)
         repository.getPhotosWithSavedTag()
         resetScore()
     }
 
     fun onPuppiesMenuItemClicked() {
-        val repository = Injection.provideRepository(GameApplication().applicationContext)
+        val repository = Injection.provideRepository()
         repository.setPreferencesPhotoTag(Constants.PHOTO_TAG_PUPPY_VALUE)
         repository.getPhotosWithSavedTag()
         resetScore()
     }
 
-    fun removeCardsFromMaps() {
-        removeCardsFromMap()
-    }
-
     fun shouldDispatchTouchEvent(): Boolean {
-        return shouldDispatchUiEvent()
+        return facingUpCardsConcurrentHashMap.size != Constants.NUMBER_MATCHING_CARDS
     }
 
-    fun onScoredEntered(playerScore: PlayerScore): Observable<Long> {
-        return Injection.provideAddScoreUseCase(GameApplication().applicationContext)
-                .addTopScore(playerScore)
+    fun onScoredEntered(playerScore: PlayerScore) {
+        val repository = Injection.provideRepository()
+        repository.addTopScore(playerScore)
     }
 
-    fun removeViewFlipper() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    fun notifyAdapterItemRemoved(id: String) {
-
-    }
-
-    fun onTurnCardsOver() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    //fun onGameScoreChanged(gameScore: Int) {
-    //  TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    //}
-
-    fun notifyAdapterItemChanged(key: Int?) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    private fun turnCardsOver() {
+        Handler().postDelayed({
+            facingUpCardsConcurrentHashMap.clear()
+            // TODO no idea
+            // removeViewFlipper()
+            photosMutableLiveData.postValue(photosMutableLiveData.value)
+        }, Constants.ROTATION_TIME.toLong())
     }
 }

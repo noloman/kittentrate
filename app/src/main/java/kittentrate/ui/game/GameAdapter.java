@@ -1,6 +1,7 @@
 package kittentrate.ui.game;
 
 import android.content.Context;
+import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,19 +23,33 @@ import manulorenzo.me.kittentrate.R;
 import static android.support.v7.widget.RecyclerView.NO_POSITION;
 
 /**
- * Created by Manuel Lorenzo on 13/03/2017.
+ * Copyright 2018 Manuel Lorenzo
+ * <p>
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
-
 public class GameAdapter extends RecyclerView.Adapter<GameAdapter.CardViewHolder> {
-    private final Context context;
     private final List<Card> cardList;
     private OnItemClickListener onItemClickListener;
 
-    GameAdapter(OnItemClickListener onItemClickListener, Context context) {
+    GameAdapter(OnItemClickListener onItemClickListener) {
         this.onItemClickListener = onItemClickListener;
-        this.context = context.getApplicationContext();
         cardList = new ArrayList<>();
     }
+
+//    void setDataCardImages(List<PhotoEntity> entityList) {
+//        DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new MyDiffCallback(entityList, cardList));
+//        diffResult.dispatchUpdatesTo(this);
+//    }
 
     void setDataCardImages(List<PhotoEntity> entityList) {
         cardList.clear();
@@ -109,6 +124,37 @@ public class GameAdapter extends RecyclerView.Adapter<GameAdapter.CardViewHolder
                     .asBitmap()
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .into(cardFront);
+        }
+    }
+
+    private class MyDiffCallback extends DiffUtil.Callback {
+        private final List<PhotoEntity> newPhotoEntityList;
+        private final List<Card> oldCardList;
+
+        MyDiffCallback(List<PhotoEntity> newPhotoEntityList, List<Card> oldCardList) {
+            this.newPhotoEntityList = newPhotoEntityList;
+            this.oldCardList = oldCardList;
+        }
+
+        @Override
+        public int getOldListSize() {
+            return oldCardList.size();
+        }
+
+        @Override
+        public int getNewListSize() {
+            return newPhotoEntityList.size();
+        }
+
+        @Override
+        public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
+            String id = oldCardList.get(oldItemPosition).component1();
+            return id.equals(newPhotoEntityList.get(newItemPosition).getId());
+        }
+
+        @Override
+        public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
+            return oldCardList.get(oldItemPosition).getId().equals(newPhotoEntityList.get(newItemPosition).getId());
         }
     }
 }

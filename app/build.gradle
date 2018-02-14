@@ -135,16 +135,6 @@ if (keystorePropertiesFile != null
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    // Dagger core
-    annotationProcessor "com.google.dagger:dagger-compiler:$daggerVersion"
-    compile "com.google.dagger:dagger:$daggerVersion"
-
-    // Dagger Android
-    annotationProcessor "com.google.dagger:dagger-android-processor:$daggerVersion"
-    compile "com.google.dagger:dagger-android-support:$daggerVersion"
-    // if you are not using support library, include this instead
-    //compile "com.google.dagger:dagger-android:$daggerVersion"
-
     androidTestImplementation("com.android.support.test.espresso:espresso-core:$espressoVersion", {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
