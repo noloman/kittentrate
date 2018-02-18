@@ -45,6 +45,23 @@ class GameViewModel : ViewModel() {
         gameMutableLiveData.value = Game()
     }
 
+    /**
+     * Method that handles all the logic of the game. It is given a {@position} and a {@card} and
+     * checks first, whether {@facingUpCardsHashMap} already contains a card in the {@position}
+     * or not.
+     *
+     * If it does NOT, it assigns the given {@card} in the {@facingUpCardsHashMap} to the position.
+     * Then it checks whether it should check for matching cards, and if it does need to, it
+     * uses the id of the {@card} and iterates through {@facingUpCardsHashMap} and if the id is
+     * already there, the match hasn't been found.
+     *
+     * If the match has been found, it iterates
+     * through {@facingUpCardsHashMap} and removes the card from {@photosMutableLiveData}. Then
+     * the {@facingUpCardsHashMap} is cleared up and increases the game score.
+     *
+     * If the match was never found, it just decreases the game score and turns the already facing
+     * up cards to be facing down, so the turn can start again
+     */
     fun cardFlipped(position: Int, card: Card) {
         if (!facingUpCardsHashMap.containsKey(position)) {
             facingUpCardsHashMap[position] = card
@@ -91,6 +108,9 @@ class GameViewModel : ViewModel() {
         }
     }
 
+    /**
+     * Resets the score of the game to be 0 again
+     */
     private fun resetScore() {
         val game: Game? = gameMutableLiveData.value
         if (game != null) {
@@ -99,10 +119,17 @@ class GameViewModel : ViewModel() {
         }
     }
 
+    /**
+     * Method that checks whether two cards match, by comparing the size of the
+     * {@facingUpCardsHashMap} and the {@Constants.NUMBER_MATCHING_CARDS}
+     */
     private fun shouldCheckForCardsMatch(): Boolean {
         return facingUpCardsHashMap.size == Constants.NUMBER_MATCHING_CARDS
     }
 
+    /**
+     * Increases the score of the game by 1
+     */
     private fun increaseGameScore() {
         val game: Game? = gameMutableLiveData.value
         if (game != null) {
@@ -111,6 +138,9 @@ class GameViewModel : ViewModel() {
         }
     }
 
+    /**
+     * Decreases the score of the game by 1
+     */
     private fun decreaseGameScore() {
         val game: Game? = gameMutableLiveData.value
         if (game != null) {
@@ -119,6 +149,10 @@ class GameViewModel : ViewModel() {
         }
     }
 
+    /**
+     * Method called on starting the ViewModel
+     * that fetches the available photos from the Repository
+     */
     fun getPhotos() {
         val mapper = PhotoEntityMapper()
         Injection.provideRepository()
@@ -140,7 +174,9 @@ class GameViewModel : ViewModel() {
                         })
     }
 
-    // Presenter methods
+    /**
+     * Method called whenever the kittens menu item is clicked
+     */
     fun onKittensMenuItemClicked() {
         val repository = Injection.provideRepository()
         repository.setPreferencesPhotoTag(Constants.PHOTO_TAG_KITTEN_VALUE)
@@ -148,6 +184,9 @@ class GameViewModel : ViewModel() {
         resetScore()
     }
 
+    /**
+     * Method called whenever the puppies menu item is clicked
+     */
     fun onPuppiesMenuItemClicked() {
         val repository = Injection.provideRepository()
         repository.setPreferencesPhotoTag(Constants.PHOTO_TAG_PUPPY_VALUE)
@@ -155,10 +194,18 @@ class GameViewModel : ViewModel() {
         resetScore()
     }
 
+    /**
+     * Method that checks whether the user should be allowed to tap on the screen.
+     * This happens only when the number of cards that are facing up is different than
+     * {@NUMBER_MATCHING_CARDS}
+     */
     fun shouldDispatchTouchEvent(): Boolean {
         return facingUpCardsHashMap.size != Constants.NUMBER_MATCHING_CARDS
     }
 
+    /**
+     * Method called whenever the player enters a new score after completing the game
+     */
     fun onScoredEntered(playerScore: PlayerScore) {
         val repository = Injection.provideRepository()
         repository.addTopScore(playerScore)
