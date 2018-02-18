@@ -3,6 +3,7 @@ package kittentrate.ui.game
 import android.annotation.SuppressLint
 import android.app.ProgressDialog
 import android.arch.lifecycle.ViewModelProviders
+import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.app.AlertDialog
@@ -14,6 +15,7 @@ import android.widget.TextView
 import android.widget.ViewFlipper
 import butterknife.BindView
 import butterknife.ButterKnife
+import kittentrate.GameApplication
 import kittentrate.data.model.PhotoEntity
 import kittentrate.data.viewmodel.GameViewModel
 import kittentrate.data.viewmodel.NetworkViewState
@@ -23,6 +25,7 @@ import kittentrate.ui.score.PlayerScore
 import kittentrate.ui.view.custom.AutofitRecyclerView
 import manulorenzo.me.kittentrate.R
 import kotlin.properties.Delegates
+
 
 /**
  * Copyright 2018 Manuel Lorenzo
@@ -41,6 +44,7 @@ import kotlin.properties.Delegates
  */
 class GameFragment : Fragment(), GameAdapter.OnItemClickListener,
         NameScoreDialogFragment.NameScoreKeyListener {
+
     @BindView(R.id.floating_textview)
     internal lateinit var floatingTextView: TextView
     @BindView(R.id.recycler_view)
@@ -65,12 +69,17 @@ class GameFragment : Fragment(), GameAdapter.OnItemClickListener,
         // Required empty constructor
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        val refWatcher = GameApplication.getRefWatcher(activity as Context)
+        refWatcher.watch(this)
+    }
+
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        // TODO NO! Blocking first
-        val bla: Game? = gameViewModel.gameMutableLiveData.value
-        if (bla?.score != null) {
-            outState.putInt(SCORE_BUNDLE_KEY, bla.score)
+        val game: Game? = gameViewModel.gameMutableLiveData.value
+        if (game?.score != null) {
+            outState.putInt(SCORE_BUNDLE_KEY, game.score)
         }
     }
 
@@ -121,11 +130,11 @@ class GameFragment : Fragment(), GameAdapter.OnItemClickListener,
         gameViewModel.getPhotos()
     }
 
-    override fun onItemClick(position: Int, card: Card, viewFlipper: ViewFlipper) {
-        if (shouldDispatchTouchEvent() && !gameViewModel.viewFlipperCardWeakHashMap.containsKey(viewFlipper)) {
+    override fun onItemClick(position: Int, item: Card, viewFlipper: ViewFlipper) {
+        if (shouldDispatchTouchEvent() && !gameViewModel.viewFlipperCardHashMap.containsKey(viewFlipper)) {
             viewFlipper.showNext()
-            gameViewModel.viewFlipperCardWeakHashMap[viewFlipper] = card
-            gameViewModel.cardFlipped(position, card)
+            gameViewModel.viewFlipperCardHashMap[viewFlipper] = item
+            gameViewModel.cardFlipped(position, item)
         }
     }
 
@@ -153,13 +162,6 @@ class GameFragment : Fragment(), GameAdapter.OnItemClickListener,
         gameAdapter.setDataCardImages(photoEntityList)
         // TODO ugliest thing ever: we want to listen to the score changes until the adapter is initialized with the newest pictures
         gameViewModel.gameMutableLiveData.observeForever({ it -> it?.let { it1 -> onScoreChanged(it1) } })
-    }
-
-    fun removeViewFlipper() {
-        for (viewFlipper in gameViewModel.viewFlipperCardWeakHashMap.keys) {
-            viewFlipper.showPrevious()
-        }
-        gameViewModel.viewFlipperCardWeakHashMap.clear()
     }
 
     private fun showErrorView() {

@@ -22,6 +22,8 @@ import kittentrate.repository.datasource.NetworkDataSource
  */
 class NetworkDataSourceImpl(private val repository: Repository) : NetworkDataSource {
     override fun getPhotosWithSavedTag(): Observable<FlickrPhoto> {
-        return RetrofitClient.getRetrofitClient().getPhotos(repository.getPreferencesPhotoTag())
+        return repository.getPreferencesPhotoTag().flatMap { tag: String ->
+            RetrofitClient.getRetrofitClient().getPhotos(tag)
+        }
     }
 }

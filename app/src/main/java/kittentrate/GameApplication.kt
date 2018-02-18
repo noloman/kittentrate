@@ -2,7 +2,9 @@ package kittentrate
 
 import android.app.Application
 import android.arch.persistence.room.Room
+import android.content.Context
 import com.squareup.leakcanary.LeakCanary
+import com.squareup.leakcanary.RefWatcher
 import kittentrate.api.ApiService
 import kittentrate.api.RetrofitClient
 import kittentrate.data.preferences.SharedPreferencesDataSourceImpl
@@ -14,11 +16,16 @@ import kittentrate.repository.Repository
  */
 
 class GameApplication : Application() {
+    private lateinit var refWatcher: RefWatcher
 
     companion object {
         lateinit var database: Database
         lateinit var flickrApi: ApiService
         lateinit var repository: Repository
+        fun getRefWatcher(context: Context): RefWatcher {
+            val gameApplication: GameApplication = context.applicationContext as GameApplication
+            return gameApplication.refWatcher
+        }
     }
 
     override fun onCreate() {
@@ -28,7 +35,7 @@ class GameApplication : Application() {
             // You should not init your app in this process.
             return
         }
-        LeakCanary.install(this)
+        refWatcher = LeakCanary.install(this)
         // Normal app init code...}
         database = Room.databaseBuilder(this,
                 Database::class.java,

@@ -2,6 +2,8 @@ package kittentrate.repository
 
 import io.reactivex.Flowable
 import io.reactivex.Observable
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import kittentrate.api.ApiService
 import kittentrate.data.model.FlickrPhoto
 import kittentrate.db.PlayerScoreDao
@@ -9,7 +11,6 @@ import kittentrate.repository.datasource.DatabaseDataSource
 import kittentrate.repository.datasource.NetworkDataSource
 import kittentrate.repository.datasource.SharedPreferencesDataSource
 import kittentrate.ui.score.PlayerScore
-import kittentrate.utils.applySchedulers
 
 /**
  * Copyright 2018 Manuel Lorenzo
@@ -43,11 +44,13 @@ class Repository(private val flickrApi: ApiService,
         sharedPreferencesDataSource.setPreferencesPhotoTag(photoTag)
     }
 
-    override fun getPreferencesPhotoTag(): String = sharedPreferencesDataSource.getPreferencesPhotoTag()
+    override fun getPreferencesPhotoTag(): Observable<String> =
+            sharedPreferencesDataSource.getPreferencesPhotoTag()
 
     override fun getPhotosWithSavedTag(): Observable<FlickrPhoto> {
-        return flickrApi
-                .getPhotos(getPreferencesPhotoTag())
-                .applySchedulers()
+        return getPreferencesPhotoTag()
+                .subscribeOn(Schedulers.io())
+                .flatMap { t: String -> flickrApi.getPhotos(t) }
+                .subscribeOn(AndroidSchedulers.mainThread())
     }
 }
