@@ -43,8 +43,6 @@ class SharedPreferencesDataSourceImpl(val context: Context) : SharedPreferencesD
 
     private fun setStringValue(key: String, value: String?) {
         sharedPreferences
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
                 .subscribeBy { sharedPreferences ->
                     sharedPreferences
                             .edit()
@@ -55,7 +53,8 @@ class SharedPreferencesDataSourceImpl(val context: Context) : SharedPreferencesD
 
     override fun getPreferencesPhotoTag(): Observable<String> =
             sharedPreferences
-                    .subscribeOn(Schedulers.io())
-                    .map { t: SharedPreferences -> t.getString(Constants.PHOTO_TAG_KEY, Constants.PHOTO_TAG_KITTEN_VALUE) }
-                    .observeOn(AndroidSchedulers.mainThread())
+                    .map { t: SharedPreferences ->
+                        t.getString(Constants.PHOTO_TAG_KEY, Constants.PHOTO_TAG_KITTEN_VALUE)
+                    }
+
 }
