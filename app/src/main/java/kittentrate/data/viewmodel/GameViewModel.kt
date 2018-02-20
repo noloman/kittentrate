@@ -10,7 +10,7 @@ import io.reactivex.rxkotlin.subscribeBy
 import kittentrate.data.mapping.PhotoEntityMapper
 import kittentrate.data.model.FlickrPhoto
 import kittentrate.data.model.PhotoEntity
-import kittentrate.di.Injection
+import kittentrate.repository.Repository
 import kittentrate.ui.game.Card
 import kittentrate.ui.game.Game
 import kittentrate.ui.score.PlayerScore
@@ -32,7 +32,7 @@ import java.util.concurrent.TimeUnit
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class GameViewModel : ViewModel() {
+class GameViewModel(val game: Game, val repository: Repository) : ViewModel() {
     var photosMutableLiveData: MutableLiveData<List<PhotoEntity>> = MutableLiveData()
     val networkViewStateMutableLiveData: MutableLiveData<NetworkViewState> = MutableLiveData()
 
@@ -42,7 +42,7 @@ class GameViewModel : ViewModel() {
     var gameMutableLiveData: MutableLiveData<Game> = MutableLiveData()
 
     init {
-        gameMutableLiveData.value = Game()
+        gameMutableLiveData.value = game
     }
 
     /**
@@ -155,7 +155,7 @@ class GameViewModel : ViewModel() {
      */
     fun getPhotos() {
         val mapper = PhotoEntityMapper()
-        Injection.provideRepository()
+        repository
                 .getPhotosWithSavedTag()
                 .flatMap { t: FlickrPhoto ->
                     Observable.fromCallable { mapper.mapToEntity(t.photos.photo) }
@@ -178,7 +178,6 @@ class GameViewModel : ViewModel() {
      * Method called whenever the kittens menu item is clicked
      */
     fun onKittensMenuItemClicked() {
-        val repository = Injection.provideRepository()
         repository.setPreferencesPhotoTag(Constants.PHOTO_TAG_KITTEN_VALUE)
         repository.getPhotosWithSavedTag()
         resetScore()
@@ -188,7 +187,6 @@ class GameViewModel : ViewModel() {
      * Method called whenever the puppies menu item is clicked
      */
     fun onPuppiesMenuItemClicked() {
-        val repository = Injection.provideRepository()
         repository.setPreferencesPhotoTag(Constants.PHOTO_TAG_PUPPY_VALUE)
         repository.getPhotosWithSavedTag()
         resetScore()
@@ -207,7 +205,6 @@ class GameViewModel : ViewModel() {
      * Method called whenever the player enters a new score after completing the game
      */
     fun onScoredEntered(playerScore: PlayerScore) {
-        val repository = Injection.provideRepository()
         repository.addTopScore(playerScore)
     }
 

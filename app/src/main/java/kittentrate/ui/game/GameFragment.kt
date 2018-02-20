@@ -19,6 +19,8 @@ import kittentrate.GameApplication
 import kittentrate.data.model.PhotoEntity
 import kittentrate.data.viewmodel.GameViewModel
 import kittentrate.data.viewmodel.NetworkViewState
+import kittentrate.data.viewmodel.factory.GameViewModelFactory
+import kittentrate.di.Injection
 import kittentrate.ui.MainActivity
 import kittentrate.ui.navigation.Screen
 import kittentrate.ui.score.PlayerScore
@@ -87,7 +89,10 @@ class GameFragment : Fragment(), GameAdapter.OnItemClickListener,
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
         gameAdapter = GameAdapter(this)
-        gameViewModel = ViewModelProviders.of(this).get(GameViewModel::class.java)
+        val gameViewModelFactory = GameViewModelFactory(Game(), Injection.provideRepository())
+        gameViewModel = ViewModelProviders
+                .of(this, gameViewModelFactory)
+                .get(GameViewModel::class.java)
         gameViewModel.networkViewStateMutableLiveData.observe(this,
                 android.arch.lifecycle.Observer { networkViewState: NetworkViewState? ->
                     networkViewState?.let { it ->
