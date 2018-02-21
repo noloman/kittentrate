@@ -1,6 +1,5 @@
 package kittentrate.ui.score;
 
-import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -17,9 +16,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import kittentrate.GameApplication;
 import kittentrate.data.viewmodel.ScoresViewModel;
-import kittentrate.data.viewmodel.factory.ScoresViewModelFactory;
 import kittentrate.ui.MainActivity;
 import kittentrate.ui.navigation.Screen;
 import manulorenzo.me.kittentrate.R;
@@ -69,9 +66,9 @@ public class ScoresFragment extends Fragment implements ScoresContract.View, Vie
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        ScoresViewModelFactory viewModelFactory = new ScoresViewModelFactory(GameApplication.database.playerScoreDao());
-        scoresViewModel = ViewModelProviders.of(this, viewModelFactory).get(ScoresViewModel.class);
-        scoresViewModel.getTopScores();
+//        ScoresViewModelFactory viewModelFactory = new ScoresViewModelFactory(GameApplication.database.playerScoreDao());
+//        scoresViewModel = ViewModelProviders.of(this, viewModelFactory).get(ScoresViewModel.class);
+//        scoresViewModel.getTopScores();
     }
 
     @Override

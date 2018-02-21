@@ -1,27 +1,31 @@
 package kittentrate
 
 import android.app.Application
-import android.arch.persistence.room.Room
 import android.content.Context
 import com.squareup.leakcanary.LeakCanary
 import com.squareup.leakcanary.RefWatcher
-import kittentrate.api.ApiService
-import kittentrate.api.RetrofitClient
-import kittentrate.data.preferences.SharedPreferencesDataSourceImpl
-import kittentrate.db.Database
-import kittentrate.repository.Repository
+import kittentrate.di.*
 
 /**
- * Created by Manuel Lorenzo
+ * Copyright 2018 Manuel Lorenzo
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
-
 class GameApplication : Application() {
     private lateinit var refWatcher: RefWatcher
 
     companion object {
-        lateinit var database: Database
-        lateinit var flickrApi: ApiService
-        lateinit var repository: Repository
+        lateinit var application: ApplicationComponent
         fun getRefWatcher(context: Context): RefWatcher {
             val gameApplication: GameApplication = context.applicationContext as GameApplication
             return gameApplication.refWatcher
@@ -37,12 +41,12 @@ class GameApplication : Application() {
         }
         refWatcher = LeakCanary.install(this)
         // Normal app init code...}
-        database = Room.databaseBuilder(this,
-                Database::class.java,
-                "Database")
+        application = DaggerApplicationComponent
+                .builder()
+                .appModule(AppModule(this))
+                .databaseModule(DatabaseModule(this))
+                .repositoryModule(RepositoryModule())
                 .build()
-        flickrApi = RetrofitClient.getRetrofitClient()
-        val sharedPreferencesDataSource = SharedPreferencesDataSourceImpl(this)
-        repository = Repository(flickrApi, database.playerScoreDao(), sharedPreferencesDataSource)
+        application.inject(this)
     }
 }

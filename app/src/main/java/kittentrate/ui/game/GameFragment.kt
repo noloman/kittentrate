@@ -20,12 +20,12 @@ import kittentrate.data.model.PhotoEntity
 import kittentrate.data.viewmodel.GameViewModel
 import kittentrate.data.viewmodel.NetworkViewState
 import kittentrate.data.viewmodel.factory.GameViewModelFactory
-import kittentrate.di.Injection
 import kittentrate.ui.MainActivity
 import kittentrate.ui.navigation.Screen
 import kittentrate.ui.score.PlayerScore
 import kittentrate.ui.view.custom.AutofitRecyclerView
 import manulorenzo.me.kittentrate.R
+import javax.inject.Inject
 import kotlin.properties.Delegates
 
 
@@ -46,6 +46,8 @@ import kotlin.properties.Delegates
  */
 class GameFragment : Fragment(), GameAdapter.OnItemClickListener,
         NameScoreDialogFragment.NameScoreKeyListener {
+    @Inject
+    internal lateinit var gameViewModelFactory: GameViewModelFactory
 
     @BindView(R.id.floating_textview)
     internal lateinit var floatingTextView: TextView
@@ -87,9 +89,9 @@ class GameFragment : Fragment(), GameAdapter.OnItemClickListener,
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        GameApplication.application.inject(this)
         setHasOptionsMenu(true)
         gameAdapter = GameAdapter(this)
-        val gameViewModelFactory = GameViewModelFactory(Game(), Injection.provideRepository())
         gameViewModel = ViewModelProviders
                 .of(this, gameViewModelFactory)
                 .get(GameViewModel::class.java)

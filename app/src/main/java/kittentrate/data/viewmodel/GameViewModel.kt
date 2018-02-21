@@ -16,6 +16,7 @@ import kittentrate.ui.game.Game
 import kittentrate.ui.score.PlayerScore
 import kittentrate.utils.Constants
 import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 
 /**
  * Copyright 2018 Manuel Lorenzo
@@ -32,7 +33,7 @@ import java.util.concurrent.TimeUnit
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class GameViewModel(val game: Game, val repository: Repository) : ViewModel() {
+class GameViewModel @Inject constructor(val game: Game, val repository: Repository) : ViewModel() {
     var photosMutableLiveData: MutableLiveData<List<PhotoEntity>> = MutableLiveData()
     val networkViewStateMutableLiveData: MutableLiveData<NetworkViewState> = MutableLiveData()
 
