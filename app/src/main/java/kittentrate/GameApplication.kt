@@ -1,23 +1,10 @@
 package kittentrate
 
-import android.app.Activity
 import android.app.Application
-import android.arch.persistence.room.Room
 import android.content.Context
-import android.support.v4.app.Fragment
 import com.squareup.leakcanary.LeakCanary
 import com.squareup.leakcanary.RefWatcher
-import dagger.android.AndroidInjector
-import dagger.android.DispatchingAndroidInjector
-import dagger.android.HasActivityInjector
-import dagger.android.support.HasSupportFragmentInjector
-import kittentrate.api.ApiService
-import kittentrate.api.RetrofitClient
-import kittentrate.data.preferences.SharedPreferencesDataSourceImpl
-import kittentrate.db.Database
-import kittentrate.di.DaggerApplicationComponent
-import kittentrate.repository.Repository
-import javax.inject.Inject
+import kittentrate.di.*
 
 /**
  * Copyright 2018 Manuel Lorenzo
@@ -34,26 +21,11 @@ import javax.inject.Inject
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class GameApplication : Application(), HasActivityInjector, HasSupportFragmentInjector {
-    @Inject
-    lateinit var dispatchingAndroidFragmentInjector: DispatchingAndroidInjector<Fragment>
-    @Inject
-    lateinit var dispatchingAndroidInjector: DispatchingAndroidInjector<Activity>
-
-    override fun activityInjector(): AndroidInjector<Activity> {
-        return dispatchingAndroidInjector
-    }
-
-    override fun supportFragmentInjector(): AndroidInjector<Fragment> {
-        return dispatchingAndroidFragmentInjector
-    }
-
+class GameApplication : Application() {
     private lateinit var refWatcher: RefWatcher
 
     companion object {
-        lateinit var database: Database
-        lateinit var flickrApi: ApiService
-        lateinit var repository: Repository
+        lateinit var application: ApplicationComponent
         fun getRefWatcher(context: Context): RefWatcher {
             val gameApplication: GameApplication = context.applicationContext as GameApplication
             return gameApplication.refWatcher
@@ -62,7 +34,6 @@ class GameApplication : Application(), HasActivityInjector, HasSupportFragmentIn
 
     override fun onCreate() {
         super.onCreate()
-        DaggerApplicationComponent.create().inject(this)
         if (LeakCanary.isInAnalyzerProcess(this)) {
             // This process is dedicated to LeakCanary for heap analysis.
             // You should not init your app in this process.
@@ -70,12 +41,12 @@ class GameApplication : Application(), HasActivityInjector, HasSupportFragmentIn
         }
         refWatcher = LeakCanary.install(this)
         // Normal app init code...}
-        database = Room.databaseBuilder(this,
-                Database::class.java,
-                "Database")
+        application = DaggerApplicationComponent
+                .builder()
+                .appModule(AppModule(this))
+                .databaseModule(DatabaseModule(this))
+                .repositoryModule(RepositoryModule())
                 .build()
-        flickrApi = RetrofitClient.getRetrofitClient()
-        val sharedPreferencesDataSource = SharedPreferencesDataSourceImpl(this)
-        repository = Repository(flickrApi, database.playerScoreDao(), sharedPreferencesDataSource)
+        application.inject(this)
     }
 }
