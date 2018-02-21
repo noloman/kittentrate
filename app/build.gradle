@@ -61,6 +61,7 @@ android {
     sourceSets {
         androidTest.assets.srcDirs +=
                 files("$projectDir/schemas".toString())
+        mock { java.srcDirs = ['src/mock/java', 'src/mock/java/'] }
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
