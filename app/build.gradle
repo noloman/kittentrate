@@ -24,6 +24,16 @@ if (keystorePropertiesFile.exists() && keystorePropertiesFile.canRead()) {
     keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 }
 
+// Generate a minor version code from git commit count (ideally for prod builds in small scale projects)
+
+static def generateVersionCode() {
+    def result = "git rev-list HEAD --count".execute().text.trim() //unix
+    if(result.empty) throw new RuntimeException("Could not generate versioncode on this platform? Cmd output: ${result.text}")
+    return result.toInteger()
+}
+
+def majorVersion = 1
+
 android {
     signingConfigs {
         release
@@ -34,8 +44,8 @@ android {
         applicationId "manulorenzo.me.kittentrate"
         minSdkVersion 15
         targetSdkVersion 27
-        versionCode 2
-        versionName "1.0"
+        versionCode generateVersionCode()
+        versionName "${majorVersion}.${getVersionCode()}"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
 
