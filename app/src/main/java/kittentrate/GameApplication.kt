@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment
 import com.squareup.leakcanary.LeakCanary
 import com.squareup.leakcanary.RefWatcher
 import dagger.android.AndroidInjector
+import dagger.android.DispatchingAndroidInjector
 import dagger.android.HasActivityInjector
 import dagger.android.support.HasSupportFragmentInjector
 import kittentrate.api.ApiService
@@ -16,6 +17,7 @@ import kittentrate.data.preferences.SharedPreferencesDataSourceImpl
 import kittentrate.db.Database
 import kittentrate.di.DaggerApplicationComponent
 import kittentrate.repository.Repository
+import javax.inject.Inject
 
 /**
  * Copyright 2018 Manuel Lorenzo
@@ -33,12 +35,17 @@ import kittentrate.repository.Repository
  * limitations under the License.
  */
 class GameApplication : Application(), HasActivityInjector, HasSupportFragmentInjector {
+    @Inject
+    lateinit var dispatchingAndroidFragmentInjector: DispatchingAndroidInjector<Fragment>
+    @Inject
+    lateinit var dispatchingAndroidInjector: DispatchingAndroidInjector<Activity>
+
     override fun activityInjector(): AndroidInjector<Activity> {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return dispatchingAndroidInjector
     }
 
     override fun supportFragmentInjector(): AndroidInjector<Fragment> {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return dispatchingAndroidFragmentInjector
     }
 
     private lateinit var refWatcher: RefWatcher
