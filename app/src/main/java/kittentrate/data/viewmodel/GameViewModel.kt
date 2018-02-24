@@ -133,10 +133,8 @@ class GameViewModel @Inject constructor(val game: Game, val repository: Reposito
      */
     private fun increaseGameScore() {
         val game: Game? = gameMutableLiveData.value
-        if (game != null) {
-            game.increaseScore()
-            gameMutableLiveData.value = game
-        }
+        game?.increaseScore()
+        gameMutableLiveData.value = game
     }
 
     /**
@@ -144,10 +142,8 @@ class GameViewModel @Inject constructor(val game: Game, val repository: Reposito
      */
     private fun decreaseGameScore() {
         val game: Game? = gameMutableLiveData.value
-        if (game != null) {
-            game.decreaseScore()
-            gameMutableLiveData.value = game
-        }
+        game?.decreaseScore()
+        gameMutableLiveData.value = game
     }
 
     /**
