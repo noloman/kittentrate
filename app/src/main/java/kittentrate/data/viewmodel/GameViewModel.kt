@@ -37,7 +37,7 @@ class GameViewModel @Inject constructor(val game: Game, val repository: Reposito
     var photosMutableLiveData: MutableLiveData<List<PhotoEntity>> = MutableLiveData()
     val networkViewStateMutableLiveData: MutableLiveData<NetworkViewState> = MutableLiveData()
 
-    private val facingUpCardsHashMap = HashMap<Int, Card>(Constants.NUMBER_MATCHING_CARDS)
+    internal val facingUpCardsHashMap = HashMap<Int, Card>(Constants.NUMBER_MATCHING_CARDS)
     val viewFlipperCardHashMap = HashMap<ViewFlipper, Card>(Constants.NUMBER_MATCHING_CARDS)
 
     var gameMutableLiveData: MutableLiveData<Game> = MutableLiveData()
@@ -115,7 +115,7 @@ class GameViewModel @Inject constructor(val game: Game, val repository: Reposito
     private fun resetScore() {
         val game: Game? = gameMutableLiveData.value
         if (game != null) {
-            game.score = 0
+            game.resetScore()
             gameMutableLiveData.value = game
         }
     }
@@ -134,7 +134,7 @@ class GameViewModel @Inject constructor(val game: Game, val repository: Reposito
     private fun increaseGameScore() {
         val game: Game? = gameMutableLiveData.value
         if (game != null) {
-            game.score = game.score + 1
+            game.increaseScore()
             gameMutableLiveData.value = game
         }
     }
@@ -145,7 +145,7 @@ class GameViewModel @Inject constructor(val game: Game, val repository: Reposito
     private fun decreaseGameScore() {
         val game: Game? = gameMutableLiveData.value
         if (game != null) {
-            game.score = game.score - 1
+            game.decreaseScore()
             gameMutableLiveData.value = game
         }
     }

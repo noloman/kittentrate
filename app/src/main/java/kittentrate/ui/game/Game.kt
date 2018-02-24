@@ -10,4 +10,16 @@ class Game {
     init {
         score = 0
     }
+
+    fun increaseScore() {
+        score += 1
+    }
+
+    fun decreaseScore() {
+        score -= 1
+    }
+
+    fun resetScore() {
+        score = 0
+    }
 }
