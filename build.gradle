@@ -23,6 +23,7 @@ buildscript {
         mockitoKotlinVersion = "1.5.0"
         daggerVersion = "2.9"
         rxKotlinVersion = "2.2.0"
+        firebaseVersion = "11.8.0"
     }
     repositories {
         jcenter()

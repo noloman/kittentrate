@@ -27,8 +27,7 @@ if (keystorePropertiesFile.exists() && keystorePropertiesFile.canRead()) {
 // Generate a minor version code from git commit count (ideally for prod builds in small scale projects)
 
 static def generateVersionCode() {
-    def result = "git rev-list HEAD --count".execute().text.trim() //unix
-    if(result.empty) throw new RuntimeException("Could not generate versioncode on this platform? Cmd output: ${result.text}")
+    def result = "git rev-list HEAD --count".execute().text.trim()
     return result.toInteger()
 }
 
@@ -146,6 +145,9 @@ if (keystorePropertiesFile != null
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
+    // Firebase
+    implementation "com.google.firebase:firebase-core:$firebaseVersion"
+
     // Dagger 2
     implementation "com.google.dagger:dagger-android:$daggerVersion"
     kapt "com.google.dagger:dagger-compiler:$daggerVersion"
@@ -238,3 +240,5 @@ configurations.all {
         }
     }
 }
+
+apply plugin: 'com.google.gms.google-services'
