@@ -157,14 +157,6 @@ class GameFragment : Fragment(), GameAdapter.OnItemClickListener,
         loadingDialog.dismiss()
     }
 
-    fun notifyAdapterItemChanged(pos: Int) {
-        gameAdapter.notifyItemChanged(pos)
-    }
-
-    fun notifyAdapterItemRemoved(id: String) {
-        // gameAdapter.removeItem(id)
-    }
-
     private fun setAdapterData(photoEntityList: List<PhotoEntity>) {
         gameAdapter.setDataCardImages(photoEntityList)
         // TODO ugliest thing ever: we want to listen to the score changes until the adapter is initialized with the newest pictures
