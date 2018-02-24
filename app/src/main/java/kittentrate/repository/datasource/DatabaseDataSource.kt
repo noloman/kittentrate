@@ -1,6 +1,7 @@
 package kittentrate.repository.datasource
 
 import io.reactivex.Flowable
+import io.reactivex.Single
 import kittentrate.ui.score.PlayerScore
 
 /**
@@ -9,5 +10,5 @@ import kittentrate.ui.score.PlayerScore
 interface DatabaseDataSource {
     fun getTopScores(): Flowable<List<PlayerScore>>
 
-    fun addTopScore(playerScore: PlayerScore)
+    fun addTopScore(playerScore: PlayerScore): Single<Long>
 }

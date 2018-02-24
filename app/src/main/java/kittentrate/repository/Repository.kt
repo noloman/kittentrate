@@ -2,6 +2,7 @@ package kittentrate.repository
 
 import io.reactivex.Flowable
 import io.reactivex.Observable
+import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kittentrate.api.ApiService
@@ -36,8 +37,9 @@ class Repository(private val flickrApi: ApiService,
         return playerScoreDao.getTopScores()
     }
 
-    override fun addTopScore(playerScore: PlayerScore) {
-        playerScoreDao.addTopScore(playerScore)
+    override fun addTopScore(playerScore: PlayerScore): Single<Long> {
+        return playerScoreDao.addTopScore(playerScore).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
     }
 
     override fun setPreferencesPhotoTag(photoTag: String) {
