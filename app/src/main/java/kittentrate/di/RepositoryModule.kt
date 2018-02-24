@@ -8,8 +8,10 @@ import kittentrate.api.RetrofitClient
 import kittentrate.data.preferences.SharedPreferencesDataSourceImpl
 import kittentrate.data.viewmodel.factory.GameViewModelFactory
 import kittentrate.db.Database
+import kittentrate.db.DatabaseDataSourceImpl
 import kittentrate.db.PlayerScoreDao
 import kittentrate.repository.Repository
+import kittentrate.repository.datasource.DatabaseDataSource
 import kittentrate.repository.datasource.SharedPreferencesDataSource
 import kittentrate.ui.game.Game
 import javax.inject.Singleton
@@ -19,9 +21,15 @@ class RepositoryModule {
     @Provides
     @Singleton
     fun provideRepository(flickrApi: ApiService,
-                          playerScoreDao: PlayerScoreDao,
+                          databaseDataSource: DatabaseDataSource,
                           sharedPreferencesDataSource: SharedPreferencesDataSource): Repository {
-        return Repository(flickrApi, playerScoreDao, sharedPreferencesDataSource)
+        return Repository(flickrApi, databaseDataSource, sharedPreferencesDataSource)
+    }
+
+    @Provides
+    @Singleton
+    fun provideDatabaseDataSource(playerScoreDao: PlayerScoreDao): DatabaseDataSource {
+        return DatabaseDataSourceImpl(playerScoreDao)
     }
 
     @Provides

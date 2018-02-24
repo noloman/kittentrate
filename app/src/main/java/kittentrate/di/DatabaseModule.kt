@@ -9,7 +9,8 @@ import javax.inject.Singleton
 
 @Module
 class DatabaseModule(gameApplication: GameApplication) {
-    val database = Room.databaseBuilder(gameApplication, Database::class.java, "Database")
+    val database = Room
+            .databaseBuilder(gameApplication, Database::class.java, "Database")
             .build()
 
     @Singleton

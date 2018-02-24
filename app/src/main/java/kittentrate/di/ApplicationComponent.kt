@@ -11,7 +11,7 @@ import javax.inject.Singleton
 @Component(modules = [AppModule::class, RepositoryModule::class, DatabaseModule::class])
 interface ApplicationComponent {
     fun inject(gameViewModel: GameViewModel)
-    fun inect(gameViewModelFactory: GameViewModelFactory)
+    fun inject(gameViewModelFactory: GameViewModelFactory)
     fun inject(gameApplication: GameApplication)
     fun inject(gameFragment: GameFragment)
 }

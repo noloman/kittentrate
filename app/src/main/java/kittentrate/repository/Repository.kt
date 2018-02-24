@@ -7,7 +7,6 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kittentrate.api.ApiService
 import kittentrate.data.model.FlickrPhoto
-import kittentrate.db.PlayerScoreDao
 import kittentrate.repository.datasource.DatabaseDataSource
 import kittentrate.repository.datasource.NetworkDataSource
 import kittentrate.repository.datasource.SharedPreferencesDataSource
@@ -29,16 +28,17 @@ import kittentrate.ui.score.PlayerScore
  * limitations under the License.
  */
 class Repository(private val flickrApi: ApiService,
-                 private val playerScoreDao: PlayerScoreDao,
+                 private val databaseDataSource: DatabaseDataSource,
                  private val sharedPreferencesDataSource: SharedPreferencesDataSource) :
         NetworkDataSource, DatabaseDataSource, SharedPreferencesDataSource {
 
     override fun getTopScores(): Flowable<List<PlayerScore>> {
-        return playerScoreDao.getTopScores()
+        return databaseDataSource.getTopScores()
     }
 
     override fun addTopScore(playerScore: PlayerScore): Single<Long> {
-        return playerScoreDao.addTopScore(playerScore).subscribeOn(Schedulers.io())
+        return databaseDataSource.addTopScore(playerScore)
+                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
     }
 

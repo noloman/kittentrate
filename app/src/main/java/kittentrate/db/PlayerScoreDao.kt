@@ -5,7 +5,6 @@ import android.arch.persistence.room.Insert
 import android.arch.persistence.room.OnConflictStrategy
 import android.arch.persistence.room.Query
 import io.reactivex.Flowable
-import io.reactivex.Single
 import kittentrate.ui.score.PlayerScore
 
 /**
@@ -17,5 +16,5 @@ interface PlayerScoreDao {
     fun getTopScores(): Flowable<List<PlayerScore>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun addTopScore(playerScore: PlayerScore): Single<Long>
+    fun addTopScore(playerScore: PlayerScore): Long
 }
