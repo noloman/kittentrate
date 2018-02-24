@@ -77,7 +77,7 @@ class GameViewModel @Inject constructor(val game: Game, val repository: Reposito
                 }
                 if (matchFound) {
                     var itemShouldBeRemoved = false
-                    val itemToBeRemoved = mutableListOf<PhotoEntity>()
+                    val itemToBeRemoved = mutableSetOf<PhotoEntity>()
                     // Match found; remove MATCHED cards from data set
                     for ((_, facingUpCard) in facingUpCardsHashMap.asIterable()) {
                         val newPhotos = photosMutableLiveData.value?.toMutableList()
@@ -99,6 +99,7 @@ class GameViewModel @Inject constructor(val game: Game, val repository: Reposito
                         }
                     }
                     facingUpCardsHashMap.clear()
+                    viewFlipperCardHashMap.clear()
                     increaseGameScore()
                 } else {
                     // Match not found; turn cards over and start from the beginning.
@@ -114,9 +115,9 @@ class GameViewModel @Inject constructor(val game: Game, val repository: Reposito
      */
     private fun resetScore() {
         val game: Game? = gameMutableLiveData.value
-        if (game != null) {
-            game.resetScore()
-            gameMutableLiveData.value = game
+        game.let {
+            resetScore()
+            gameMutableLiveData.value = it
         }
     }
 
@@ -133,8 +134,10 @@ class GameViewModel @Inject constructor(val game: Game, val repository: Reposito
      */
     private fun increaseGameScore() {
         val game: Game? = gameMutableLiveData.value
-        game?.increaseScore()
-        gameMutableLiveData.value = game
+        game.let {
+            it?.increaseScore()
+            gameMutableLiveData.value = game
+        }
     }
 
     /**
