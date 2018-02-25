@@ -18,17 +18,15 @@ class PhotoEntityMapper : PhotoEntityMapperInterface {
         while (it.hasNext() && count < photoCollection.size / Constants.NUMBER_MATCHING_CARDS) {
             ++count
             val photo = it.next()
-            val photoEntity = PhotoEntity()
-            photoEntity.id = photo.id
             val photoUrlString = "https://farm" + photo.farm + ".staticflickr.com/" + photo.server + "/" + photo.id + "_" + photo.secret + ".jpg"
-            photoEntity.url = photoUrlString
+            val photoEntity = PhotoEntity(photo.id, photoUrlString)
             photoEntityArrayList.add(photoEntity)
         }
         val newPhotoEntityArrayList1 = ArrayList<PhotoEntity>()
         for (i in 0 until count / (2 * Constants.NUMBER_MATCHING_CARDS)) {
             newPhotoEntityArrayList1.addAll(photoEntityArrayList)
         }
-        if (BuildConfig.DEBUG) {
+        if (BuildConfig.BUILD_TYPE.equals("release", ignoreCase = true)) {
             Collections.shuffle(newPhotoEntityArrayList1, Random(System.nanoTime()))
         }
         return newPhotoEntityArrayList1
